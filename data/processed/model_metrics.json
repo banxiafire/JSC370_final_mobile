@@ -1,0 +1,23 @@
+{
+  "n_rows": 806,
+  "n_countries": 145,
+  "train_rows": 644,
+  "test_rows": 162,
+  "rf_r2": 0.48382043518312834,
+  "rf_rmse": 4.4702920753426,
+  "xgb_r2": 0.4117736856170824,
+  "xgb_rmse": 4.772080052087476,
+  "delta_r2": 0.07204674956604595,
+  "delta_rmse": 0.3017879767448761,
+  "usage_ratio": 2.77251188971532,
+  "growth_corr": -0.054214201737393705,
+  "level_corr": 0.4817996749399765,
+  "below20_corr": -0.04592590709567692,
+  "above20_corr": -0.1287141310644205,
+  "dominance_year": 2026,
+  "rf_best_params": {
+    "model__max_depth": null,
+    "model__min_samples_split": 2,
+    "model__n_estimators": 300
+  }
+}

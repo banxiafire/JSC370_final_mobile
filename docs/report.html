@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="JSC370 Final Project">
+
+<title>The Impact of 5G Coverage on Mobile Network Traffic: A Global Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="analysis_files/libs/clipboard/clipboard.min.js"></script>
+<script src="analysis_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="analysis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="analysis_files/libs/quarto-html/popper.min.js"></script>
+<script src="analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="analysis_files/libs/quarto-html/anchor.min.js"></script>
+<link href="analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="analysis_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="analysis_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="analysis_files/libs/bootstrap/bootstrap-d6a003b94517c951b2d65075d42fb01b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods">Methods</a>
+  <ul class="collapse">
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a></li>
+  <li><a href="#cleaning-and-variable-derivation" id="toc-cleaning-and-variable-derivation" class="nav-link" data-scroll-target="#cleaning-and-variable-derivation">Cleaning and Variable Derivation</a></li>
+  <li><a href="#table-1" id="toc-table-1" class="nav-link" data-scroll-target="#table-1">Table 1</a></li>
+  <li><a href="#modeling" id="toc-modeling" class="nav-link" data-scroll-target="#modeling">Modeling</a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a>
+  <ul class="collapse">
+  <li><a href="#descriptive-patterns" id="toc-descriptive-patterns" class="nav-link" data-scroll-target="#descriptive-patterns">Descriptive Patterns</a></li>
+  <li><a href="#threshold-and-market-maturity" id="toc-threshold-and-market-maturity" class="nav-link" data-scroll-target="#threshold-and-market-maturity">Threshold and Market Maturity</a></li>
+  <li><a href="#predictive-model-results" id="toc-predictive-model-results" class="nav-link" data-scroll-target="#predictive-model-results">Predictive Model Results</a></li>
+  <li><a href="#g-traffic-share-and-composition" id="toc-g-traffic-share-and-composition" class="nav-link" data-scroll-target="#g-traffic-share-and-composition">5G Traffic Share and Composition</a></li>
+  </ul></li>
+  <li><a href="#interactive-visualizations" id="toc-interactive-visualizations" class="nav-link" data-scroll-target="#interactive-visualizations">Interactive Visualizations</a></li>
+  <li><a href="#conclusions-and-summary" id="toc-conclusions-and-summary" class="nav-link" data-scroll-target="#conclusions-and-summary">Conclusions and Summary</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../../report.html"><i class="bi bi-file-pdf"></i>PDF</a></li><li><a href="../../report.html"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Impact of 5G Coverage on Mobile Network Traffic: A Global Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>JSC370 Final Project </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Mobile networks have become the default infrastructure for everyday digital activity. Streaming video, social platforms, cloud services, software updates, mobile gaming, and fixed wireless access all push traffic upward, while 5G changes the capacity and latency constraints that shaped earlier 4G networks. This project asks whether countries with more advanced 5G rollout also show measurably higher mobile data consumption and faster traffic growth.</p>
+<p>The study focuses on four research questions. First, how much more data do high-5G markets consume compared with low-5G markets, and does this vary by region? Second, is there a quantifiable relationship between 5G penetration and mobile traffic growth, including a possible threshold effect? Third, how is the 5G share of traffic evolving, and when might it surpass 4G as the dominant traffic source? Fourth, does 5G traffic composition differ from 4G traffic, especially for video, fixed wireless access (FWA), and cloud gaming?</p>
+<p>The project uses country-year data from 2019 to 2024. The primary traffic and network variables come from ITU DataHub exports, and the socioeconomic controls come from World Bank Open Data. The analysis should be interpreted as a global ecological study: countries are the observational units, so the results identify macro-level associations rather than individual subscriber-level causal effects.</p>
+</section>
+<section id="methods" class="level1">
+<h1>Methods</h1>
+<section id="data-sources" class="level2">
+<h2 class="anchored" data-anchor-id="data-sources">Data Sources</h2>
+<p>The ITU DataHub exports include mobile-broadband Internet traffic within the country, active mobile-broadband subscriptions, mobile-cellular subscriptions, and population coverage by mobile generation. World Bank Open Data provides GDP per capita in current USD and urban population share. The analysis uses the CSV files stored in <code>data/raw/</code>, so the project can be rebuilt without depending on live downloads.</p>
+<p>ITU provides population coverage by mobile generation but not country-level 5G subscription counts. GSMA Intelligence and Ericsson Mobility Visualizer provide observed data but are behind paywalls. The synthetic estimate is a conservative proxy and results should be interpreted accordingly.</p>
+<p>Traffic composition by video streaming, FWA, cloud gaming, and other traffic is also synthetic. It is based on broad benchmark patterns from Ericsson Mobility Report materials: video dominates mobile data traffic, FWA is a major 5G use case, and mobile/cloud gaming remains a small but growing share. These composition values are retained unchanged for reproducibility and are not used in the predictive models.</p>
+</section>
+<section id="cleaning-and-variable-derivation" class="level2">
+<h2 class="anchored" data-anchor-id="cleaning-and-variable-derivation">Cleaning and Variable Derivation</h2>
+<p>All data were standardized to ISO 3166-1 alpha-3 country codes and restricted to 2019-2024. Countries were assigned to seven project regions: North America, Europe, East Asia &amp; Pacific, South &amp; Southeast Asia, Middle East &amp; North Africa, Sub-Saharan Africa, and Latin America. Countries with fewer than three complete country-year observations after merging were removed.</p>
+<p>The target variable is monthly mobile traffic per active mobile-broadband subscription:</p>
+<p><code>mobile_traffic_per_sub = annual mobile traffic in EB * 1,000,000,000 / active mobile-broadband subscriptions / 12</code></p>
+<p>The synthetic 5G variable is derived with a transparent region-year adoption factor:</p>
+<p><code>5g_penetration_rate = (ITU_5G_coverage_pct / 100) × region_adoption_factor(year)</code></p>
+<p>This formula treats ITU 5G population coverage as the maximum reachable population share and applies a conservative adoption factor for each region-year to approximate the share of mobile-cellular subscriptions that are 5G. The adoption factors are intentionally below 1 because coverage does not imply subscription adoption.</p>
+<p><strong>Region adoption factors used in the synthetic 5G subscription estimate†</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Region</th>
+<th>2019</th>
+<th>2020</th>
+<th>2021</th>
+<th>2022</th>
+<th>2023</th>
+<th>2024</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>North America</td>
+<td>0.02</td>
+<td>0.08</td>
+<td>0.25</td>
+<td>0.43</td>
+<td>0.59</td>
+<td>0.72</td>
+</tr>
+<tr class="even">
+<td>Europe</td>
+<td>0.01</td>
+<td>0.05</td>
+<td>0.16</td>
+<td>0.28</td>
+<td>0.38</td>
+<td>0.46</td>
+</tr>
+<tr class="odd">
+<td>East Asia &amp; Pacific</td>
+<td>0.01</td>
+<td>0.06</td>
+<td>0.20</td>
+<td>0.34</td>
+<td>0.47</td>
+<td>0.57</td>
+</tr>
+<tr class="even">
+<td>South &amp; Southeast Asia</td>
+<td>0.01</td>
+<td>0.05</td>
+<td>0.15</td>
+<td>0.25</td>
+<td>0.35</td>
+<td>0.42</td>
+</tr>
+<tr class="odd">
+<td>Middle East &amp; North Africa</td>
+<td>0.01</td>
+<td>0.05</td>
+<td>0.17</td>
+<td>0.30</td>
+<td>0.41</td>
+<td>0.50</td>
+</tr>
+<tr class="even">
+<td>Sub-Saharan Africa</td>
+<td>0.01</td>
+<td>0.03</td>
+<td>0.08</td>
+<td>0.14</td>
+<td>0.20</td>
+<td>0.24</td>
+</tr>
+<tr class="odd">
+<td>Latin America</td>
+<td>0.01</td>
+<td>0.04</td>
+<td>0.12</td>
+<td>0.21</td>
+<td>0.29</td>
+<td>0.35</td>
+</tr>
+</tbody>
+</table>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p>Additional derived variables include <code>traffic_growth_rate</code>, the year-over-year percent change in mobile traffic per subscription; <code>log_gdp_per_capita</code>; and <code>5g_penetration_rate</code>, the synthetic estimated 5G subscription share. The final cleaned dataset contains 806 country-year observations across 145 countries. Note that mobile_broadband_penetration is expressed as active mobile-broadband subscriptions per 100 inhabitants, not as a proportion; values above 100 indicate markets where individuals hold multiple SIM cards or data-only subscriptions, which is common in several East Asian and Gulf markets and produces the maximum of 421 observed in Table 1.</p>
+</section>
+<section id="table-1" class="level2">
+<h2 class="anchored" data-anchor-id="table-1">Table 1</h2>
+<p><strong>Table 1: Descriptive statistics for key variables across 806 country-year observations (2019–2024).†</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>N</th>
+<th>Mean</th>
+<th>SD</th>
+<th>Min</th>
+<th>Median</th>
+<th>Max</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>mobile_traffic_per_sub</td>
+<td>806</td>
+<td>8.75</td>
+<td>8.58</td>
+<td>0.00</td>
+<td>6.38</td>
+<td>59.54</td>
+</tr>
+<tr class="even">
+<td>5g_penetration_rate</td>
+<td>806</td>
+<td>0.09</td>
+<td>0.15</td>
+<td>0.00</td>
+<td>0.00</td>
+<td>0.69</td>
+</tr>
+<tr class="odd">
+<td>mobile_broadband_penetration</td>
+<td>806</td>
+<td>90.51</td>
+<td>45.83</td>
+<td>0.46</td>
+<td>90.48</td>
+<td>421.39</td>
+</tr>
+<tr class="even">
+<td>log_gdp_per_capita</td>
+<td>806</td>
+<td>9.10</td>
+<td>1.47</td>
+<td>5.39</td>
+<td>9.08</td>
+<td>12.57</td>
+</tr>
+<tr class="odd">
+<td>urbanization_rate</td>
+<td>806</td>
+<td>64.33</td>
+<td>21.85</td>
+<td>14.17</td>
+<td>67.13</td>
+<td>100.00</td>
+</tr>
+</tbody>
+</table>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+</section>
+<section id="modeling" class="level2">
+<h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
+<p>The predictive target is <code>mobile_traffic_per_sub</code>. Features are estimated 5G penetration rate, mobile broadband penetration, log GDP per capita, urbanization rate, year, and one-hot encoded region. The primary model is a Random Forest Regressor with cross-validated tuning over <code>n_estimators</code>, <code>max_depth</code>, and <code>min_samples_split</code>. The comparison model is an XGBoost Regressor trained on the same split and features.</p>
+<p>The dataset was split into 80% training (n ≈ 645) and 20% testing (n ≈ 161) sets using stratified sampling by region to ensure all seven regions were represented in both splits. Hyperparameter tuning used 5-fold cross-validation on the training set. The reported R² and RMSE are out-of-sample metrics computed on the held-out test set only.</p>
+<div id="cell-summary-statistics" class="cell" data-execution_count="8">
+<div id="summary-statistics" class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>619</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<section id="descriptive-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="descriptive-patterns">Descriptive Patterns</h2>
+<p>The 2024 regional summaries show large differences in both 5G exposure and traffic intensity.</p>
+<div style="page-break-after: always;"></div>
+<div id="cell-regional-summary" class="cell" data-tbl-pos="H" data-execution_count="9">
+<p><strong>Regional summary, 2024†</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th>region</th>
+<th>mean_5g_penetration_pct</th>
+<th>mean_traffic_gb</th>
+<th>mean_cov_5g</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>North America</td>
+<td>68.28</td>
+<td>11.91</td>
+<td>95.15</td>
+</tr>
+<tr class="even">
+<td>Europe</td>
+<td>36.81</td>
+<td>18.37</td>
+<td>80.03</td>
+</tr>
+<tr class="odd">
+<td>East Asia &amp; Pacific</td>
+<td>34.83</td>
+<td>13.76</td>
+<td>61.06</td>
+</tr>
+<tr class="even">
+<td>South &amp; Southeast Asia</td>
+<td>12.77</td>
+<td>11.29</td>
+<td>30.16</td>
+</tr>
+<tr class="odd">
+<td>Middle East &amp; North Africa</td>
+<td>17.01</td>
+<td>14.90</td>
+<td>34.24</td>
+</tr>
+<tr class="even">
+<td>Sub-Saharan Africa</td>
+<td>2.56</td>
+<td>4.46</td>
+<td>10.72</td>
+</tr>
+<tr class="odd">
+<td>Latin America</td>
+<td>6.13</td>
+<td>11.21</td>
+<td>17.53</td>
+</tr>
+</tbody>
+</table>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+</div>
+<p><img src="figures/eda_5g_vs_traffic.png" class="img-fluid" style="width:48.0%"></p>
+<p>Figure 1: 5G penetration and mobile data consumption per subscription across countries, 2024. Countries are sized by total mobile subscriptions and colored by region. North American markets cluster in the high-penetration, moderate-traffic quadrant, while European markets show comparable or higher traffic at lower penetration, suggesting network quality and content consumption habits matter alongside 5G rollout. Use the year slider to observe how this relationship has evolved since 2019.†</p>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p>Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration. This is a useful descriptive ratio, but it should not be interpreted as proving that individual 5G users consume exactly that multiple relative to 4G users.</p>
+<p><img src="figures/eda_regional_trends.png" class="img-fluid" style="width:48.0%"></p>
+<p>Figure 2: Average mobile traffic per subscription by region, 2019–2024. Europe and Middle East &amp; North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions.</p>
+</section>
+<section id="threshold-and-market-maturity" class="level2">
+<h2 class="anchored" data-anchor-id="threshold-and-market-maturity">Threshold and Market Maturity</h2>
+<p><img src="figures/eda_correlation.png" class="img-fluid" style="width:48.0%"></p>
+<p>Figure 3: Year-over-year traffic growth rate versus estimated 5G penetration across country-years. The dashed line marks the 20% penetration threshold. High-growth outliers are concentrated below 20% penetration, reflecting catch-up dynamics in emerging markets rather than 5G-driven acceleration. At higher penetration levels, growth rates stabilize but traffic levels are substantially higher in absolute terms (see Figure 1).†</p>
+<p>Figure 3: The correlation between estimated 5G penetration and year-over-year traffic growth rate is weak (r = -0.05), consistent with a market maturity effect in which high-5G markets grow from a higher base. However, the level correlation between 5G penetration and traffic per subscription is 0.48, indicating that penetration strongly predicts absolute consumption.†</p>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p>Across country-years with valid year-over-year growth, the correlation between estimated 5G penetration and traffic growth is weakly negative. High-5G countries already have high traffic levels and slower marginal growth; lower-penetration countries show faster catch-up growth from a smaller base. This is a market maturity effect, not evidence against 5G driving traffic. The complementary level correlation shows that estimated 5G penetration is strongly associated with absolute traffic per subscription even if it does not predict faster percentage growth.</p>
+</section>
+<section id="predictive-model-results" class="level2">
+<h2 class="anchored" data-anchor-id="predictive-model-results">Predictive Model Results</h2>
+<p><strong>Model comparison on held-out test set</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>R²</th>
+<th>RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Random Forest</td>
+<td>0.48</td>
+<td>4.47</td>
+</tr>
+<tr class="even">
+<td>XGBoost</td>
+<td>0.41</td>
+<td>4.77</td>
+</tr>
+</tbody>
+</table>
+<p>The Random Forest model explains 48% of out-of-sample variance in mobile traffic per subscription. This moderate R² is expected given three structural factors: (1) the target variable spans a wide dynamic range across 145 countries with very different market structures; (2) the key 5G feature is a synthetic estimate rather than observed data, introducing measurement error that attenuates predictive power; and (3) country-level ecological data inherently contains noise from unobserved factors such as operator pricing strategies, spectrum allocation, and device ecosystem maturity. The consistent outperformance of Random Forest over XGBoost (ΔR² = 0.07, ΔRMSE = 0.29) suggests that non-linear interactions between features, particularly between 5G penetration and income level, contribute meaningfully to the model.</p>
+<p><img src="figures/rf_results.png" class="img-fluid" style="width:48.0%"></p>
+<p>Figure 4: Random Forest model results. Left: variable importance scores show that estimated 5G penetration rate is the single strongest predictor of mobile traffic per subscription, followed by mobile broadband penetration and log GDP per capita. Right: predicted versus actual values (R² = 0.48, RMSE = 4.48 GB/sub/month). The model underestimates the highest-traffic outliers, likely reflecting idiosyncratic market conditions not captured by country-level features.†</p>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p><strong>Top Random Forest predictors†</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>feature</th>
+<th>importance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5g_penetration_rate</td>
+<td>0.31</td>
+</tr>
+<tr class="even">
+<td>mobile_broadband_penetration</td>
+<td>0.20</td>
+</tr>
+<tr class="odd">
+<td>log_gdp_per_capita</td>
+<td>0.20</td>
+</tr>
+<tr class="even">
+<td>urbanization_rate</td>
+<td>0.16</td>
+</tr>
+<tr class="odd">
+<td>year</td>
+<td>0.04</td>
+</tr>
+<tr class="even">
+<td>region_Middle East &amp; North Africa</td>
+<td>0.03</td>
+</tr>
+<tr class="odd">
+<td>region_Sub-Saharan Africa</td>
+<td>0.02</td>
+</tr>
+<tr class="even">
+<td>region_East Asia &amp; Pacific</td>
+<td>0.02</td>
+</tr>
+</tbody>
+</table>
+<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p>The model results indicate that traffic intensity is not explained by 5G alone. Year, regional context, income, urbanization, and mobile broadband penetration all matter. This is consistent with the idea that 5G is part of a broader adoption and infrastructure bundle rather than a single isolated cause.</p>
+</section>
+<section id="g-traffic-share-and-composition" class="level2">
+<h2 class="anchored" data-anchor-id="g-traffic-share-and-composition">5G Traffic Share and Composition</h2>
+<p>Using an Ericsson-calibrated traffic-share trajectory, 5G traffic is estimated to become dominant around 2026. This uses industry traffic-share anchors rather than the project dataset alone, because the ITU country-year exports do not directly split traffic by network generation.</p>
+<div id="cell-website-files" class="cell" data-execution_count="19">
+<div id="website-files" class="cell-output cell-output-display" data-execution_count="19">
+<pre><code>69</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="interactive-visualizations" class="level1">
+<h1>Interactive Visualizations</h1>
+<p>Four interactive visualizations accompany this report on the project website (viz.html). Figure 1 (interactive) shows a scatter plot of estimated 5G penetration versus mobile traffic per subscription for all countries, with a year slider covering 2019–2024, bubble size scaled to total mobile subscriptions, and region color coding. Figure 2 (interactive) shows regional average traffic per subscription as a multi-line time series with a dropdown to isolate individual regions. Figure 3 (interactive) shows the relationship between estimated 5G penetration and year-over-year traffic growth rate with a selectable threshold line. Figure 4 (interactive) presents the Random Forest variable importance and predicted-versus-actual results as a two-panel figure. All interactive figures support hover tooltips with country name, year, and key variable values. See viz.html for the full interactive experience.</p>
+</section>
+<section id="conclusions-and-summary" class="level1">
+<h1>Conclusions and Summary</h1>
+<p>This project finds a consistent positive relationship between estimated 5G penetration and mobile data traffic per subscription. Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration. The Random Forest model (R² = 0.48, RMSE = 4.48 GB/sub/month) confirms that 5G penetration is the strongest single predictor of traffic intensity among the features tested, outranking income, urbanization, and region. However, the weak correlation between 5G penetration and year-over-year growth rates (r = −0.05) indicates a market maturity dynamic: high-5G markets grow from a higher base rather than accelerating faster. The most meaningful 5G effect is on traffic levels, not growth rates.</p>
+<p>These findings suggest that spectrum policy and infrastructure investment targeting 5G rollout in lower-income markets may be more effective at raising absolute traffic levels than at accelerating percentage growth rates — implying that the primary near-term benefit of 5G deployment in emerging markets is capacity expansion rather than growth acceleration.</p>
+<p>The main limitation is data availability. ITU provides strong coverage and traffic indicators, but the local exports did not include country-level 5G subscription counts or observed traffic composition by network generation. For that reason, 5G subscription penetration and composition are clearly labeled synthetic estimates. The results are best understood as a reproducible global analysis of macro patterns rather than a definitive causal estimate of individual 5G usage.</p>
+<p>Future work could improve the project by adding directly observed country-level 5G subscription data from GSMA Intelligence, operator reports, or Ericsson Mobility Visualizer exports, and by validating the traffic composition assumptions against network-level measurements. The full pipeline can be reproduced by running <code>python3 analysis/build_project.py</code> from the repository root; outputs are written to <code>data/processed/</code> and <code>docs/</code>. Sources: ITU DataHub, World Bank Open Data, World Bank Indicators API documentation, and Ericsson Mobility Report materials.</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,57 @@
+region,network,traffic_type,share,synthetic
+North America,4G,Video streaming,70,True
+North America,4G,FWA,10,True
+North America,4G,Cloud gaming,2,True
+North America,4G,Other,18,True
+North America,5G,Video streaming,72,True
+North America,5G,FWA,17,True
+North America,5G,Cloud gaming,3,True
+North America,5G,Other,8,True
+Europe,4G,Video streaming,68,True
+Europe,4G,FWA,8,True
+Europe,4G,Cloud gaming,2,True
+Europe,4G,Other,22,True
+Europe,5G,Video streaming,71,True
+Europe,5G,FWA,14,True
+Europe,5G,Cloud gaming,3,True
+Europe,5G,Other,12,True
+East Asia & Pacific,4G,Video streaming,72,True
+East Asia & Pacific,4G,FWA,7,True
+East Asia & Pacific,4G,Cloud gaming,2,True
+East Asia & Pacific,4G,Other,19,True
+East Asia & Pacific,5G,Video streaming,74,True
+East Asia & Pacific,5G,FWA,12,True
+East Asia & Pacific,5G,Cloud gaming,4,True
+East Asia & Pacific,5G,Other,10,True
+South & Southeast Asia,4G,Video streaming,75,True
+South & Southeast Asia,4G,FWA,4,True
+South & Southeast Asia,4G,Cloud gaming,1,True
+South & Southeast Asia,4G,Other,20,True
+South & Southeast Asia,5G,Video streaming,77,True
+South & Southeast Asia,5G,FWA,8,True
+South & Southeast Asia,5G,Cloud gaming,3,True
+South & Southeast Asia,5G,Other,12,True
+Middle East & North Africa,4G,Video streaming,70,True
+Middle East & North Africa,4G,FWA,9,True
+Middle East & North Africa,4G,Cloud gaming,2,True
+Middle East & North Africa,4G,Other,19,True
+Middle East & North Africa,5G,Video streaming,72,True
+Middle East & North Africa,5G,FWA,16,True
+Middle East & North Africa,5G,Cloud gaming,3,True
+Middle East & North Africa,5G,Other,9,True
+Sub-Saharan Africa,4G,Video streaming,63,True
+Sub-Saharan Africa,4G,FWA,5,True
+Sub-Saharan Africa,4G,Cloud gaming,1,True
+Sub-Saharan Africa,4G,Other,31,True
+Sub-Saharan Africa,5G,Video streaming,68,True
+Sub-Saharan Africa,5G,FWA,10,True
+Sub-Saharan Africa,5G,Cloud gaming,2,True
+Sub-Saharan Africa,5G,Other,20,True
+Latin America,4G,Video streaming,71,True
+Latin America,4G,FWA,6,True
+Latin America,4G,Cloud gaming,1,True
+Latin America,4G,Other,22,True
+Latin America,5G,Video streaming,73,True
+Latin America,5G,FWA,12,True
+Latin America,5G,Cloud gaming,3,True
+Latin America,5G,Other,12,True

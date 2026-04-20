@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSC370 Final Project | 5G and Mobile Traffic</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">JSC370 5G Traffic</a>
+    <nav>
+      <a href="index.html">Summary</a>
+      <a href="viz.html">Visualizations</a>
+      <a href="report.pdf">PDF report</a>
+      <a href="https://github.com/banxiafire/JSC370_final_mobile">GitHub</a>
+    </nav>
+  </header>
+  <main>
+    <section class="intro-band">
+      <div class="content narrow">
+        <p class="eyebrow">University of Toronto JSC370</p>
+        <h1>The Impact of 5G Coverage on Mobile Network Traffic</h1>
+        <p class="lead">A global country-year analysis of mobile broadband traffic, 5G rollout, income, urbanization, and regional differences from 2019 to 2024.</p>
+        <div class="actions">
+          <a class="button" href="viz.html">Open interactive visualizations</a>
+          <a class="button secondary" href="report.pdf">Download PDF report</a>
+          <a class="button secondary" href="https://github.com/banxiafire/JSC370_final_mobile">View repository</a>
+        </div>
+      </div>
+    </section>
+    <section class="content">
+      <div class="summary-grid">
+        <div class="metric"><strong>145</strong>countries after cleaning</div>
+        <div class="metric"><strong>806</strong>country-year observations</div>
+        <div class="metric"><strong>0.48</strong>Random Forest test R²</div>
+      </div>
+    </section>
+    <section class="band">
+      <div class="content">
+        <h2>Key Findings</h2>
+        <p>Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration.</p>
+        <p>The country-year correlation between estimated 5G penetration and year-over-year mobile traffic growth is -0.05, reflecting a market maturity dynamic. The level correlation with mobile traffic per subscription is 0.48, indicating a strong relationship with absolute consumption.</p>
+        <p>Using an Ericsson-calibrated traffic-share trajectory, 5G traffic becomes the dominant source around 2026.</p>
+        <img class="figure-image" src="figures/eda_regional_trends.png" alt="Regional mobile traffic trends from 2019 to 2024">
+        <p class="caption">Figure 2: Average mobile traffic per subscription by region, 2019–2024. Europe and Middle East & North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions.</p>
+        <img class="figure-image" src="figures/rf_results.png" alt="Random Forest variable importance and predicted vs actual results">
+        <p class="caption">Figure 4: Random Forest variable importance and prediction accuracy (R² = 0.48). Estimated 5G penetration rate is the strongest single predictor of mobile traffic per subscription. <a href="viz.html">View all four interactive visualizations →</a></p>
+      </div>
+    </section>
+    <section class="content">
+      <h2>Methods Snapshot</h2>
+      <p>The cleaned dataset merges ITU DataHub mobile-broadband traffic, mobile-broadband subscriptions, mobile-cellular subscriptions, and mobile population coverage indicators with World Bank GDP per capita and urbanization data. Country-level 5G subscription counts were not available in the local ITU exports, so the project uses an explicitly flagged synthetic estimate calibrated from observed ITU 5G population coverage, year, and region.</p>
+      <p>A tuned Random Forest model and an XGBoost comparison model predict monthly GB per active mobile-broadband subscription using estimated 5G penetration, mobile broadband penetration, log GDP per capita, urbanization, region, and year.</p>
+      <p class="note">† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+    </section>
+  </main>
+  <footer>
+    <p>Website: <a href="https://banxiafire.github.io/JSC370_final_mobile">https://banxiafire.github.io/JSC370_final_mobile</a>. Data sources: <a href="https://datahub.itu.int/data/">ITU DataHub</a> and <a href="https://data.worldbank.org/">World Bank Open Data</a>.</p>
+  </footer>
+</body>
+</html>
