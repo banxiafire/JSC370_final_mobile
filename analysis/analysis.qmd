@@ -42,7 +42,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.io as pio
-from IPython.display import Markdown, display
+from IPython.display import Image, Markdown, display
 from plotly.subplots import make_subplots
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
@@ -419,6 +419,15 @@ table1 = (
     )
 )
 table1["N"] = table1["N"].astype(int)
+table1["Variable"] = table1["Variable"].replace(
+    {
+        "mobile_traffic_per_sub": "Mobile traffic per subscription",
+        "5g_penetration_rate": "Estimated 5G penetration rate",
+        "mobile_broadband_penetration": "Mobile broadband penetration",
+        "log_gdp_per_capita": "Log GDP per capita",
+        "urbanization_rate": "Urbanization rate",
+    }
+)
 table1.to_csv(PROCESSED / "table1_descriptive_statistics.csv", index=False)
 display(Markdown("**Table 1: Descriptive statistics for key variables across 806 country-year observations (2019–2024).†**\n\n" + md_table(table1, ".2f") + f"\n\n{DAGGER_NOTE}"))
 ```
@@ -547,6 +556,7 @@ model_comparison.to_csv(PROCESSED / "model_comparison.csv", index=False)
 
 ```{python}
 #| label: summary-statistics
+#| output: false
 latest = df[df["year"].eq(2024)].copy()
 high_5g_mean = df[df["5g_penetration_rate"] >= 0.20]["mobile_traffic_per_sub"].mean()
 low_5g_mean = df[df["5g_penetration_rate"] <= 0.05]["mobile_traffic_per_sub"].mean()
@@ -612,8 +622,6 @@ summary = {
 
 The 2024 regional summaries show large differences in both 5G exposure and traffic intensity.
 
-{{< pagebreak >}}
-
 ```{python}
 #| label: regional-summary
 #| output: asis
@@ -621,8 +629,13 @@ The 2024 regional summaries show large differences in both 5G exposure and traff
 display(Markdown("**Regional summary, 2024†**\n\n" + md_table(regional_2024, ".2f") + f"\n\n{DAGGER_NOTE}"))
 ```
 
+Figure 1 visualizes this regional variation at the country level for 2024.
+
 ```{python}
-#| label: static-figures
+#| label: fig-static-1
+#| fig-cap: "5G penetration and mobile data consumption per subscription across countries, 2024. Countries are sized by total mobile subscriptions and colored by region. North American markets cluster in the high-penetration, moderate-traffic quadrant, while European markets show comparable or higher traffic at lower penetration, suggesting network quality and content consumption habits matter alongside 5G rollout. Use the year slider to observe how this relationship has evolved since 2019.† Based on synthetic 5G subscription estimate; see Methods for derivation."
+#| fig-width: 7
+#| fig-height: 5
 plt.rcParams.update(
     {
         "figure.dpi": 150,
@@ -635,8 +648,11 @@ plt.rcParams.update(
     }
 )
 
-fig, ax = plt.subplots(figsize=(7.2, 4.4))
-for region, sub in latest.groupby("region"):
+fig, ax = plt.subplots(figsize=(7, 5))
+for region in REGION_ORDER:
+    sub = latest[latest["region"].eq(region)]
+    if sub.empty:
+        continue
     ax.scatter(
         sub["5g_penetration_pct"],
         sub["mobile_traffic_per_sub"],
@@ -651,15 +667,27 @@ ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), frameon=False)
 fig.tight_layout()
 fig.savefig(FIGURES / "eda_5g_vs_traffic.png")
 fig.savefig(REPORT_FIGURES / "eda_5g_vs_traffic.png")
+display(Image(filename=str(REPORT_FIGURES / "eda_5g_vs_traffic.png")))
 plt.close(fig)
+```
 
+Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration. This is a useful descriptive ratio, but it should not be interpreted as proving that individual 5G users consume exactly that multiple relative to 4G users.
+
+```{python}
+#| label: fig-static-2
+#| fig-cap: "Average mobile traffic per subscription by region, 2019-2024. Europe and Middle East & North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions."
+#| fig-width: 6.5
+#| fig-height: 4
 regional_trends = (
     df.groupby(["region", "year"], observed=True)["mobile_traffic_per_sub"]
     .mean()
     .reset_index()
 )
-fig, ax = plt.subplots(figsize=(7.2, 4.1))
-for region, sub in regional_trends.groupby("region"):
+fig, ax = plt.subplots(figsize=(6.5, 4))
+for region in REGION_ORDER:
+    sub = regional_trends[regional_trends["region"].eq(region)]
+    if sub.empty:
+        continue
     ax.plot(sub["year"], sub["mobile_traffic_per_sub"], marker="o", label=region)
 ax.set_title("Average Mobile Traffic by Region")
 ax.set_xlabel("Year")
@@ -668,9 +696,18 @@ ax.legend(loc="upper left", bbox_to_anchor=(1.02, 1), frameon=False)
 fig.tight_layout()
 fig.savefig(FIGURES / "eda_regional_trends.png")
 fig.savefig(REPORT_FIGURES / "eda_regional_trends.png")
+display(Image(filename=str(REPORT_FIGURES / "eda_regional_trends.png")))
 plt.close(fig)
+```
 
-fig, ax = plt.subplots(figsize=(6.8, 4.2))
+## Threshold and Market Maturity
+
+```{python}
+#| label: fig-static-3
+#| fig-cap: "Year-over-year traffic growth rate versus estimated 5G penetration across country-years. The dashed line marks the 20% penetration threshold. High-growth outliers are concentrated below 20% penetration, reflecting catch-up dynamics in emerging markets rather than 5G-driven acceleration. At higher penetration levels, growth rates stabilize but traffic levels are substantially higher in absolute terms (see Figure 1). The growth-rate correlation is weak (r = -0.05), while the level correlation between 5G penetration and traffic per subscription is 0.48.† Based on synthetic 5G subscription estimate; see Methods for derivation."
+#| fig-width: 6.5
+#| fig-height: 4
+fig, ax = plt.subplots(figsize=(6.5, 4))
 ax.scatter(growth_df["5g_penetration_pct"], growth_df["traffic_growth_rate"], alpha=0.45, color="#136F63")
 ax.axvline(20, color="#E4572E", linestyle="--", linewidth=1)
 ax.set_ylim(np.nanpercentile(growth_df["traffic_growth_rate"], 2), np.nanpercentile(growth_df["traffic_growth_rate"], 98))
@@ -680,55 +717,8 @@ ax.set_ylabel("Year-over-year growth in GB/sub/month (%)")
 fig.tight_layout()
 fig.savefig(FIGURES / "eda_correlation.png")
 fig.savefig(REPORT_FIGURES / "eda_correlation.png")
+display(Image(filename=str(REPORT_FIGURES / "eda_correlation.png")))
 plt.close(fig)
-
-fig, axes = plt.subplots(1, 2, figsize=(9.5, 4.2))
-top_importance = feature_importance.head(10).sort_values("importance")
-axes[0].barh(top_importance["feature"], top_importance["importance"], color="#136F63")
-axes[0].set_title("Random Forest Variable Importance")
-axes[0].set_xlabel("Importance")
-axes[1].scatter(predictions["mobile_traffic_per_sub"], predictions["rf_prediction"], alpha=0.65, color="#E4572E")
-line_min = min(predictions["mobile_traffic_per_sub"].min(), predictions["rf_prediction"].min())
-line_max = max(predictions["mobile_traffic_per_sub"].max(), predictions["rf_prediction"].max())
-axes[1].plot([line_min, line_max], [line_min, line_max], color="#333333", linewidth=1)
-axes[1].set_title(f"Predicted vs. Actual (R²={rf_r2_report:.2f})")
-axes[1].set_xlabel("Actual GB/sub/month")
-axes[1].set_ylabel("Predicted GB/sub/month")
-fig.tight_layout()
-fig.savefig(FIGURES / "rf_results.png")
-fig.savefig(REPORT_FIGURES / "rf_results.png")
-plt.close(fig)
-```
-
-![](figures/eda_5g_vs_traffic.png){width=48%}
-
-```{python}
-#| output: asis
-display(Markdown(FIG1_CAPTION + "\n\n" + DAGGER_NOTE))
-```
-
-Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration. This is a useful descriptive ratio, but it should not be interpreted as proving that individual 5G users consume exactly that multiple relative to 4G users.
-
-![](figures/eda_regional_trends.png){width=48%}
-
-```{python}
-#| output: asis
-display(Markdown(FIG2_CAPTION))
-```
-
-## Threshold and Market Maturity
-
-![](figures/eda_correlation.png){width=48%}
-
-```{python}
-#| output: asis
-fig3_caption_extended = (
-    f"Figure 3: The correlation between estimated 5G penetration and year-over-year traffic growth rate is weak "
-    f"(r = {growth_corr:.2f}), consistent with a market maturity effect in which high-5G markets grow from a "
-    f"higher base. However, the level correlation between 5G penetration and traffic per subscription is "
-    f"{level_corr:.2f}, indicating that penetration strongly predicts absolute consumption.†"
-)
-display(Markdown(FIG3_CAPTION_TEMPLATE + "\n\n" + fig3_caption_extended + "\n\n" + DAGGER_NOTE))
 ```
 
 Across country-years with valid year-over-year growth, the correlation between estimated 5G penetration and traffic growth is weakly negative. High-5G countries already have high traffic levels and slower marginal growth; lower-penetration countries show faster catch-up growth from a smaller base. This is a market maturity effect, not evidence against 5G driving traffic. The complementary level correlation shows that estimated 5G penetration is strongly associated with absolute traffic per subscription even if it does not predict faster percentage growth.
@@ -743,12 +733,28 @@ display(Markdown("**Model comparison on held-out test set**\n\n" + md_table(mode
 
 The Random Forest model explains 48% of out-of-sample variance in mobile traffic per subscription. This moderate R² is expected given three structural factors: (1) the target variable spans a wide dynamic range across 145 countries with very different market structures; (2) the key 5G feature is a synthetic estimate rather than observed data, introducing measurement error that attenuates predictive power; and (3) country-level ecological data inherently contains noise from unobserved factors such as operator pricing strategies, spectrum allocation, and device ecosystem maturity. The consistent outperformance of Random Forest over XGBoost (ΔR² = 0.07, ΔRMSE = 0.29) suggests that non-linear interactions between features, particularly between 5G penetration and income level, contribute meaningfully to the model.
 
-![](figures/rf_results.png){width=48%}
-
 ```{python}
-#| output: asis
-fig4_caption = FIG4_CAPTION_TEMPLATE.format(rf_r2=rf_r2_report, rf_rmse=rf_rmse_report)
-display(Markdown(fig4_caption + "\n\n" + DAGGER_NOTE))
+#| label: fig-static-4
+#| fig-cap: "Random Forest model results. Left: variable importance scores show that estimated 5G penetration rate is the single strongest predictor of mobile traffic per subscription, followed by mobile broadband penetration and log GDP per capita. Right: predicted versus actual values (R² = 0.48, RMSE = 4.48 GB/sub/month). The model underestimates the highest-traffic outliers, likely reflecting idiosyncratic market conditions not captured by country-level features.† Based on synthetic 5G subscription estimate; see Methods for derivation."
+#| fig-width: 10
+#| fig-height: 4
+fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+top_importance = feature_importance.head(10).sort_values("importance")
+axes[0].barh(top_importance["feature"], top_importance["importance"], color="#136F63")
+axes[0].set_title("Random Forest Variable Importance")
+axes[0].set_xlabel("Importance")
+axes[1].scatter(predictions["mobile_traffic_per_sub"], predictions["rf_prediction"], alpha=0.65, color="#E4572E")
+line_min = min(predictions["mobile_traffic_per_sub"].min(), predictions["rf_prediction"].min())
+line_max = max(predictions["mobile_traffic_per_sub"].max(), predictions["rf_prediction"].max())
+axes[1].plot([line_min, line_max], [line_min, line_max], color="#333333", linewidth=1)
+axes[1].set_title(f"Predicted vs. Actual (R²={rf_r2_report:.2f})")
+axes[1].set_xlabel("Actual GB/sub/month")
+axes[1].set_ylabel("Predicted GB/sub/month")
+fig.tight_layout()
+fig.savefig(FIGURES / "rf_results.png")
+fig.savefig(REPORT_FIGURES / "rf_results.png")
+display(Image(filename=str(REPORT_FIGURES / "rf_results.png")))
+plt.close(fig)
 ```
 
 ```{python}
@@ -928,6 +934,7 @@ fig4.add_annotation(
 )
 fig4.update_layout(title="Random Forest Model Results", margin=dict(l=55, r=35, t=85, b=55), height=520)
 
+fig4_caption = FIG4_CAPTION_TEMPLATE.format(rf_r2=rf_r2_report, rf_rmse=rf_rmse_report)
 plotly_figures = [
     ("Figure 1", FIG1_CAPTION, fig1),
     ("Figure 2", FIG2_CAPTION, fig2),
@@ -938,6 +945,7 @@ plotly_figures = [
 
 ```{python}
 #| label: website-files
+#| output: false
 style_css = """
 :root {
   --ink: #1c2526;

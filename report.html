@@ -225,7 +225,7 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td>mobile_traffic_per_sub</td>
+<td>Mobile traffic per subscription</td>
 <td>806</td>
 <td>8.75</td>
 <td>8.58</td>
@@ -234,7 +234,7 @@ ul.task-list li input[type="checkbox"] {
 <td>59.54</td>
 </tr>
 <tr class="even">
-<td>5g_penetration_rate</td>
+<td>Estimated 5G penetration rate</td>
 <td>806</td>
 <td>0.09</td>
 <td>0.15</td>
@@ -243,7 +243,7 @@ ul.task-list li input[type="checkbox"] {
 <td>0.69</td>
 </tr>
 <tr class="odd">
-<td>mobile_broadband_penetration</td>
+<td>Mobile broadband penetration</td>
 <td>806</td>
 <td>90.51</td>
 <td>45.83</td>
@@ -252,7 +252,7 @@ ul.task-list li input[type="checkbox"] {
 <td>421.39</td>
 </tr>
 <tr class="even">
-<td>log_gdp_per_capita</td>
+<td>Log GDP per capita</td>
 <td>806</td>
 <td>9.10</td>
 <td>1.47</td>
@@ -261,7 +261,7 @@ ul.task-list li input[type="checkbox"] {
 <td>12.57</td>
 </tr>
 <tr class="odd">
-<td>urbanization_rate</td>
+<td>Urbanization rate</td>
 <td>806</td>
 <td>64.33</td>
 <td>21.85</td>
@@ -277,11 +277,6 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="modeling">Modeling</h2>
 <p>The predictive target is <code>mobile_traffic_per_sub</code>. Features are estimated 5G penetration rate, mobile broadband penetration, log GDP per capita, urbanization rate, year, and one-hot encoded region. The primary model is a Random Forest Regressor with cross-validated tuning over <code>n_estimators</code>, <code>max_depth</code>, and <code>min_samples_split</code>. The comparison model is an XGBoost Regressor trained on the same split and features.</p>
 <p>The dataset was split into 80% training (n ≈ 645) and 20% testing (n ≈ 161) sets using stratified sampling by region to ensure all seven regions were represented in both splits. Hyperparameter tuning used 5-fold cross-validation on the training set. The reported R² and RMSE are out-of-sample metrics computed on the held-out test set only.</p>
-<div id="cell-summary-statistics" class="cell" data-execution_count="8">
-<div id="summary-statistics" class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>619</code></pre>
-</div>
-</div>
 </section>
 </section>
 <section id="results" class="level1">
@@ -289,7 +284,6 @@ ul.task-list li input[type="checkbox"] {
 <section id="descriptive-patterns" class="level2">
 <h2 class="anchored" data-anchor-id="descriptive-patterns">Descriptive Patterns</h2>
 <p>The 2024 regional summaries show large differences in both 5G exposure and traffic intensity.</p>
-<div style="page-break-after: always;"></div>
 <div id="cell-regional-summary" class="cell" data-tbl-pos="H" data-execution_count="9">
 <p><strong>Regional summary, 2024†</strong></p>
 <table class="caption-top table table-sm table-striped small">
@@ -348,19 +342,53 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
 </div>
-<p><img src="figures/eda_5g_vs_traffic.png" class="img-fluid" style="width:48.0%"></p>
-<p>Figure 1: 5G penetration and mobile data consumption per subscription across countries, 2024. Countries are sized by total mobile subscriptions and colored by region. North American markets cluster in the high-penetration, moderate-traffic quadrant, while European markets show comparable or higher traffic at lower penetration, suggesting network quality and content consumption habits matter alongside 5G rollout. Use the year slider to observe how this relationship has evolved since 2019.†</p>
-<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<p>Figure 1 visualizes this regional variation at the country level for 2024.</p>
+<div id="cell-fig-static-1" class="cell" data-fig-height="5" data-fig-width="7" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<div id="fig-static-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-static-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysis_files/figure-html/fig-static-1-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-static-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: 5G penetration and mobile data consumption per subscription across countries, 2024. Countries are sized by total mobile subscriptions and colored by region. North American markets cluster in the high-penetration, moderate-traffic quadrant, while European markets show comparable or higher traffic at lower penetration, suggesting network quality and content consumption habits matter alongside 5G rollout. Use the year slider to observe how this relationship has evolved since 2019.† Based on synthetic 5G subscription estimate; see Methods for derivation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Country-years with at least 20% estimated 5G penetration consume on average 2.8 times more data per subscription than country-years below 5% penetration. This is a useful descriptive ratio, but it should not be interpreted as proving that individual 5G users consume exactly that multiple relative to 4G users.</p>
-<p><img src="figures/eda_regional_trends.png" class="img-fluid" style="width:48.0%"></p>
-<p>Figure 2: Average mobile traffic per subscription by region, 2019–2024. Europe and Middle East &amp; North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions.</p>
+<div id="cell-fig-static-2" class="cell" data-fig-height="4" data-fig-width="6.5" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<div id="fig-static-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-static-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysis_files/figure-html/fig-static-2-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-static-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Average mobile traffic per subscription by region, 2019-2024. Europe and Middle East &amp; North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="threshold-and-market-maturity" class="level2">
 <h2 class="anchored" data-anchor-id="threshold-and-market-maturity">Threshold and Market Maturity</h2>
-<p><img src="figures/eda_correlation.png" class="img-fluid" style="width:48.0%"></p>
-<p>Figure 3: Year-over-year traffic growth rate versus estimated 5G penetration across country-years. The dashed line marks the 20% penetration threshold. High-growth outliers are concentrated below 20% penetration, reflecting catch-up dynamics in emerging markets rather than 5G-driven acceleration. At higher penetration levels, growth rates stabilize but traffic levels are substantially higher in absolute terms (see Figure 1).†</p>
-<p>Figure 3: The correlation between estimated 5G penetration and year-over-year traffic growth rate is weak (r = -0.05), consistent with a market maturity effect in which high-5G markets grow from a higher base. However, the level correlation between 5G penetration and traffic per subscription is 0.48, indicating that penetration strongly predicts absolute consumption.†</p>
-<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<div id="cell-fig-static-3" class="cell" data-fig-height="4" data-fig-width="6.5" data-execution_count="12">
+<div class="cell-output cell-output-display">
+<div id="fig-static-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-static-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysis_files/figure-html/fig-static-3-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-static-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Year-over-year traffic growth rate versus estimated 5G penetration across country-years. The dashed line marks the 20% penetration threshold. High-growth outliers are concentrated below 20% penetration, reflecting catch-up dynamics in emerging markets rather than 5G-driven acceleration. At higher penetration levels, growth rates stabilize but traffic levels are substantially higher in absolute terms (see Figure 1). The growth-rate correlation is weak (r = -0.05), while the level correlation between 5G penetration and traffic per subscription is 0.48.† Based on synthetic 5G subscription estimate; see Methods for derivation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p>Across country-years with valid year-over-year growth, the correlation between estimated 5G penetration and traffic growth is weakly negative. High-5G countries already have high traffic levels and slower marginal growth; lower-penetration countries show faster catch-up growth from a smaller base. This is a market maturity effect, not evidence against 5G driving traffic. The complementary level correlation shows that estimated 5G penetration is strongly associated with absolute traffic per subscription even if it does not predict faster percentage growth.</p>
 </section>
 <section id="predictive-model-results" class="level2">
@@ -388,9 +416,20 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 <p>The Random Forest model explains 48% of out-of-sample variance in mobile traffic per subscription. This moderate R² is expected given three structural factors: (1) the target variable spans a wide dynamic range across 145 countries with very different market structures; (2) the key 5G feature is a synthetic estimate rather than observed data, introducing measurement error that attenuates predictive power; and (3) country-level ecological data inherently contains noise from unobserved factors such as operator pricing strategies, spectrum allocation, and device ecosystem maturity. The consistent outperformance of Random Forest over XGBoost (ΔR² = 0.07, ΔRMSE = 0.29) suggests that non-linear interactions between features, particularly between 5G penetration and income level, contribute meaningfully to the model.</p>
-<p><img src="figures/rf_results.png" class="img-fluid" style="width:48.0%"></p>
-<p>Figure 4: Random Forest model results. Left: variable importance scores show that estimated 5G penetration rate is the single strongest predictor of mobile traffic per subscription, followed by mobile broadband penetration and log GDP per capita. Right: predicted versus actual values (R² = 0.48, RMSE = 4.48 GB/sub/month). The model underestimates the highest-traffic outliers, likely reflecting idiosyncratic market conditions not captured by country-level features.†</p>
-<p>† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+<div id="cell-fig-static-4" class="cell" data-fig-height="4" data-fig-width="10" data-execution_count="14">
+<div class="cell-output cell-output-display">
+<div id="fig-static-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-static-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="analysis_files/figure-html/fig-static-4-output-1.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-static-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Random Forest model results. Left: variable importance scores show that estimated 5G penetration rate is the single strongest predictor of mobile traffic per subscription, followed by mobile broadband penetration and log GDP per capita. Right: predicted versus actual values (R² = 0.48, RMSE = 4.48 GB/sub/month). The model underestimates the highest-traffic outliers, likely reflecting idiosyncratic market conditions not captured by country-level features.† Based on synthetic 5G subscription estimate; see Methods for derivation.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <p><strong>Top Random Forest predictors†</strong></p>
 <table class="caption-top table">
 <thead>
@@ -440,11 +479,6 @@ ul.task-list li input[type="checkbox"] {
 <section id="g-traffic-share-and-composition" class="level2">
 <h2 class="anchored" data-anchor-id="g-traffic-share-and-composition">5G Traffic Share and Composition</h2>
 <p>Using an Ericsson-calibrated traffic-share trajectory, 5G traffic is estimated to become dominant around 2026. This uses industry traffic-share anchors rather than the project dataset alone, because the ITU country-year exports do not directly split traffic by network generation.</p>
-<div id="cell-website-files" class="cell" data-execution_count="19">
-<div id="website-files" class="cell-output cell-output-display" data-execution_count="19">
-<pre><code>69</code></pre>
-</div>
-</div>
 </section>
 </section>
 <section id="interactive-visualizations" class="level1">
