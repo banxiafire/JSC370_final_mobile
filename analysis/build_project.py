@@ -14,7 +14,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 QMD = ROOT / "analysis" / "analysis.qmd"
-DOCS = ROOT / "docs"
 
 
 def run_quarto(target: str, output: str) -> None:
@@ -24,25 +23,21 @@ def run_quarto(target: str, output: str) -> None:
         [
             "quarto",
             "render",
-            str(QMD),
+            QMD.name,
             "--to",
             target,
             "--output-dir",
-            str(DOCS),
+            "..",
             "--output",
             output,
         ],
-        cwd=ROOT,
+        cwd=QMD.parent,
         env=env,
         check=True,
     )
-    generated = ROOT / output
-    if generated.exists():
-        generated.replace(DOCS / output)
 
 
 def main() -> None:
-    DOCS.mkdir(parents=True, exist_ok=True)
     run_quarto("html", "report.html")
     run_quarto("typst", "report.pdf")
 

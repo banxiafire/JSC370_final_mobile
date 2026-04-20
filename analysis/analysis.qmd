@@ -59,11 +59,10 @@ if ROOT.name == "analysis":
 DATA = ROOT / "data"
 RAW = DATA / "raw"
 PROCESSED = DATA / "processed"
-DOCS = ROOT / "docs"
-FIGURES = DOCS / "figures"
+FIGURES = ROOT / "figures"
 REPORT_FIGURES = ROOT / "analysis" / "figures"
 
-for path in [RAW, PROCESSED, DOCS, FIGURES, REPORT_FIGURES, ROOT / "tmp" / "matplotlib"]:
+for path in [RAW, PROCESSED, FIGURES, REPORT_FIGURES, ROOT / "tmp" / "matplotlib"]:
     path.mkdir(parents=True, exist_ok=True)
 
 YEARS = list(range(2019, 2025))
@@ -980,7 +979,7 @@ h2 { margin: 0 0 14px; font-size: 1.45rem; }
 footer { padding: 24px 5vw; color: var(--muted); border-top: 1px solid var(--line); background: #ffffff; }
 @media (max-width: 760px) { .site-header { align-items: flex-start; flex-direction: column; } .summary-grid { grid-template-columns: 1fr; } .viz-section { padding: 14px; } }
 """
-(DOCS / "style.css").write_text(style_css.strip() + "\n", encoding="utf-8")
+(ROOT / "style.css").write_text(style_css.strip() + "\n", encoding="utf-8")
 
 viz_sections = []
 for idx, (label, caption, fig) in enumerate(plotly_figures):
@@ -1037,7 +1036,7 @@ viz_html = f"""<!doctype html>
 </body>
 </html>
 """
-(DOCS / "viz.html").write_text(viz_html, encoding="utf-8")
+(ROOT / "viz.html").write_text(viz_html, encoding="utf-8")
 
 index_html = f"""<!doctype html>
 <html lang="en">
@@ -1102,7 +1101,7 @@ index_html = f"""<!doctype html>
 </body>
 </html>
 """
-(DOCS / "index.html").write_text(index_html, encoding="utf-8")
+(ROOT / "index.html").write_text(index_html, encoding="utf-8")
 
 readme = f"""# JSC370 Final Project: The Impact of 5G on Global Mobile Traffic
 
@@ -1141,4 +1140,4 @@ These findings suggest that spectrum policy and infrastructure investment target
 
 The main limitation is data availability. ITU provides strong coverage and traffic indicators, but the local exports did not include country-level 5G subscription counts or observed traffic composition by network generation. For that reason, 5G subscription penetration and composition are clearly labeled synthetic estimates. The results are best understood as a reproducible global analysis of macro patterns rather than a definitive causal estimate of individual 5G usage.
 
-Future work could improve the project by adding directly observed country-level 5G subscription data from GSMA Intelligence, operator reports, or Ericsson Mobility Visualizer exports, and by validating the traffic composition assumptions against network-level measurements. The full pipeline can be reproduced by running `python3 analysis/build_project.py` from the repository root; outputs are written to `data/processed/` and `docs/`. Sources: ITU DataHub, World Bank Open Data, World Bank Indicators API documentation, and Ericsson Mobility Report materials.
+Future work could improve the project by adding directly observed country-level 5G subscription data from GSMA Intelligence, operator reports, or Ericsson Mobility Visualizer exports, and by validating the traffic composition assumptions against network-level measurements. The full pipeline can be reproduced by running `python3 analysis/build_project.py` from the repository root; outputs are written to `data/processed/` and the project root. Sources: ITU DataHub, World Bank Open Data, World Bank Indicators API documentation, and Ericsson Mobility Report materials.
