@@ -8,3 +8,5 @@ dist/
 __pycache__/
 tmp/
 .idea/
+CLAUDE.md
+.claude

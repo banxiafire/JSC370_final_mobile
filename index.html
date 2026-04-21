@@ -3,13 +3,472 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JSC370 Final Project | 5G and Mobile Traffic</title>
+  <title>Mobile Traffic & 5G Coverage</title>
   <link rel="stylesheet" href="style.css">
   <script src="scripts/main.js" defer></script>
+  <style>
+    /* ── Futuristic additions ── */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --accent: #136f63;
+      --accent2: #e4572e;
+      --accent3: #f6ae2d;
+      --glass: rgba(255,255,255,0.06);
+      --grid-line: rgba(19,111,99,0.12);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+    }
+
+    /* Hero — dark full-bleed with grid overlay */
+    .hero {
+      background: #0a0f0e;
+      position: relative;
+      overflow: hidden;
+      padding: 80px 5vw 72px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 820px;
+      transition: transform 0.35s ease;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5DCAA5;
+      border: 1px solid rgba(93,202,165,0.35);
+      border-radius: 20px;
+      padding: 4px 14px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.6rem);
+      font-weight: 700;
+      line-height: 1.06;
+      color: #ffffff;
+      margin: 0 0 20px;
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span {
+      color: #5DCAA5;
+    }
+    .hero-lead {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.55);
+      max-width: 620px;
+      margin: 0 0 32px;
+      line-height: 1.65;
+      font-weight: 300;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: #136f63;
+      color: #ffffff;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: #0f5a50; text-decoration: none; }
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 22px;
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.12); text-decoration: none; color: #fff; }
+
+    /* Stat strip */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 1px;
+      background: var(--line);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .stat-cell {
+      background: var(--panel);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-cell:hover { background: var(--bg); }
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--teal);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .stat-delta {
+      font-size: 0.78rem;
+      color: #136f63;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Section labels */
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 12px;
+    }
+
+    /* Finding timeline */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px; top: 6px; bottom: 6px;
+      width: 2px;
+      background: linear-gradient(to bottom, #136f63, #e4572e, #f6ae2d);
+    }
+    .tl-item {
+      position: relative;
+      padding: 0 0 32px 20px;
+    }
+    .tl-dot {
+      position: absolute;
+      left: -22px;
+      top: 5px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--panel);
+      border: 2px solid #136f63;
+    }
+    .tl-item:nth-child(2) .tl-dot { border-color: #136f63; }
+    .tl-item:nth-child(3) .tl-dot { border-color: #e4572e; }
+    .tl-item:nth-child(4) .tl-dot { border-color: #f6ae2d; }
+    .tl-item:nth-child(5) .tl-dot { border-color: #e4572e; }
+    .tl-rq {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 4px;
+    }
+    .tl-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 6px;
+    }
+    .tl-body {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+    .tl-stat {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #136f63;
+      background: #e1f5ee;
+      border-radius: 6px;
+      padding: 3px 10px;
+      margin-top: 8px;
+    }
+
+    /* Data bento grid */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .bento-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card.span2 { grid-column: span 2; }
+    .bento-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent-bar, #136f63);
+      border-radius: 12px 12px 0 0;
+    }
+    .bento-icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    .bento-icon.teal { background: #e1f5ee; }
+    .bento-icon.coral { background: #fdf0ec; }
+    .bento-icon.gold { background: #fef9ec; }
+    .bento-big {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .bento-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .bento-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 6px;
+    }
+    .bento-text {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* Bar chart viz */
+    .mini-bars {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .mini-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+    .mini-bar-label {
+      width: 120px;
+      color: var(--muted);
+      flex-shrink: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mini-bar-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: #136f63;
+      transition: width 0.8s ease;
+    }
+    .mini-bar-val {
+      width: 40px;
+      text-align: right;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Region divergence viz */
+    .diverge-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .diverge-item {
+      padding: 10px 12px;
+      background: var(--bg);
+      border-radius: 8px;
+    }
+    .diverge-region {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .diverge-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .diverge-bar {
+      flex: 1;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #9FE1CB, #136f63);
+    }
+    .diverge-val {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    /* Model result panel */
+    .model-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .model-cell {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 16px 18px;
+      border: 1px solid rgba(19,111,99,0.08);
+    }
+    .model-cell-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .model-cell-val {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin: 0;
+      line-height: 1;
+    }
+    .model-cell-note {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    .model-card {
+      min-height: 228px;
+      box-shadow: 0 12px 28px rgba(20, 33, 31, 0.05);
+    }
+
+    .model-card .bento-title {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    /* Source cards */
+    .source-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .source-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .source-card strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+    }
+    .source-card p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0 0 8px;
+      line-height: 1.5;
+    }
+    .source-card a {
+      font-size: 0.8rem;
+    }
+
+    /* Dark nav override for hero top */
+    .site-header {
+      background: #0a0f0e;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .site-header .brand,
+    .site-header nav a {
+      color: rgba(255,255,255,0.75);
+    }
+    .site-header nav a:hover { color: #5DCAA5; }
+    .site-header nav a.active { color: #5DCAA5; border-bottom-color: #5DCAA5; }
+
+    /* Responsive */
+    @media (max-width: 760px) {
+      .stat-strip { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.span2 { grid-column: span 1; }
+      .source-row { grid-template-columns: 1fr; }
+      .model-grid { grid-template-columns: 1fr; }
+      .diverge-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body>
+<body class="page-index">
   <header class="site-header">
-    <a class="brand" href="index.html">JSC370 5G Traffic</a>
+    <a class="brand" href="index.html">JSC370 Mobile Traffic</a>
     <nav>
       <a href="index.html">Summary</a>
       <a href="viz.html">Visualizations</a>
@@ -17,259 +476,285 @@
       <a href="https://github.com/banxiafire/JSC370_final_mobile">GitHub</a>
     </nav>
   </header>
+
   <main>
-    <section class="intro-band">
-      <div class="content narrow">
-        <p class="eyebrow">University of Toronto JSC370</p>
-        <h1>The Impact of 5G Coverage on Mobile Network Traffic</h1>
-        <p class="lead">A global country-year analysis of mobile broadband traffic, 5G rollout, income, urbanization, and regional differences from 2019 to 2024.</p>
-        <div class="actions">
-          <a class="button" href="viz.html">Open interactive visualizations</a>
-          <a class="button secondary" href="report.pdf">Download PDF report</a>
-          <a class="button secondary" href="https://github.com/banxiafire/JSC370_final_mobile">View repository</a>
+
+    <!-- ── Hero ── -->
+    <section class="hero">
+      <div class="hero-inner">
+        <span class="hero-tag">JSC370 Final Project</span>
+        <h1>What Drives <span>Mobile Data</span><br>Consumption?</h1>
+        <p class="hero-lead">Traffic composition, regional divergence, and 5G coverage across 9 global regions from 2018 to 2025.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="viz.html">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1" y="9" width="3" height="6" rx="1" fill="white"/><rect x="6" y="5" width="3" height="10" rx="1" fill="white"/><rect x="11" y="1" width="3" height="14" rx="1" fill="white"/></svg>
+            Interactive visualizations
+          </a>
+          <a class="btn-ghost" href="report.pdf">Download PDF report</a>
+          <a class="btn-ghost" href="https://github.com/banxiafire/JSC370_final_mobile">GitHub repo</a>
         </div>
       </div>
     </section>
-    <section class="content">
-      <div class="summary-grid">
-        <div class="metric">
-          <span class="counter" data-target="145" data-decimal="false">0</span>
-          <strong class="metric-label">countries analyzed</strong>
-          <p class="metric-sub">after cleaning, 2019–2024</p>
+
+    <!-- ── Stat strip ── -->
+    <div class="stat-strip">
+      <div class="stat-cell">
+        <span class="stat-number counter" data-target="9">9</span>
+        <span class="stat-label">Global regions</span>
+        <span class="stat-sub">Ericsson Mobility Report</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-number counter" data-target="8">8</span>
+        <span class="stat-label">Years of data</span>
+        <span class="stat-sub">2018 – 2025</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-number counter" data-target="0.967" data-decimals="3">0.967</span>
+        <span class="stat-label">Panel OLS R²</span>
+        <span class="stat-delta">↑ 25.3% within-region growth/yr</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-number counter" data-target="0.994" data-decimals="3" data-prefix="r = ">r = 0.994</span>
+        <span class="stat-label">5G–consumption correlation</span>
+        <span class="stat-sub">p &lt; 0.0001, 2018–2025</span>
+      </div>
+    </div>
+
+    <!-- ── Research findings ── -->
+    <section class="content" style="padding: 52px 0;">
+      <p class="section-label">Research findings</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;">
+
+        <!-- Left: timeline -->
+        <div class="timeline">
+          <div class="tl-item fade-in">
+            <div class="tl-dot"></div>
+            <p class="tl-rq">RQ1 — Traffic composition</p>
+            <h3 class="tl-title">Video is structurally dominant and accelerating</h3>
+            <p class="tl-body">Video grew from 13.4 to 108.4 EB/month (34.8% CAGR), and its share of total traffic rose from 59.9% to 75.9%. Social networking grew fastest among non-video categories at 23.2%/year. Web browsing was slowest at 11.4%.</p>
+            <span class="tl-stat">8.1× absolute volume increase</span>
+          </div>
+          <div class="tl-item fade-in">
+            <div class="tl-dot"></div>
+            <p class="tl-rq">RQ2 — Regional divergence</p>
+            <h3 class="tl-title">The absolute gap is widening, not closing</h3>
+            <p class="tl-body">The gap between highest- and lowest-consuming regions widened from 7.3 to 30.7 GB/month. India & South Asia leads at 36.0 GB/month, driven by low-cost unlimited plans. Sub-Saharan Africa remains lowest at 5.3 GB/month.</p>
+            <span class="tl-stat">Gap widened 4.2× in 7 years</span>
+          </div>
+          <div class="tl-item fade-in">
+            <div class="tl-dot" style="border-color:#e4572e"></div>
+            <p class="tl-rq" style="color:#e4572e">RQ3 — 5G & consumption</p>
+            <h3 class="tl-title">5G coverage tracks consumption growth closely</h3>
+            <p class="tl-body">Pearson r = 0.994 between global 5G coverage and world-average per-subscription consumption, 2018–2025. Each percentage point of coverage corresponds to ~0.249 GB/month. Year is a confounding factor.</p>
+            <span class="tl-stat" style="background:#fdf0ec;color:#e4572e">r = 0.994, p &lt; 0.0001</span>
+          </div>
+          <div class="tl-item fade-in">
+            <div class="tl-dot" style="border-color:#f6ae2d"></div>
+            <p class="tl-rq" style="color:#b87a10">RQ4 — Catch-up dynamics</p>
+            <h3 class="tl-title">Percentage catch-up ≠ absolute convergence</h3>
+            <p class="tl-body">Cross-sectional OLS confirms catch-up: slope = −1.198 (p = 0.026), meaning higher-baseline regions grew slower in terms of percentage. But absolute gaps widened. Panel OLS finds 25.3% within-region annual growth after controlling for fixed effects (R² = 0.967).</p>
+            <span class="tl-stat" style="background:#fef9ec;color:#b87a10">slope = −1.20, p = 0.026</span>
+          </div>
         </div>
-        <div class="metric">
-          <span class="counter" data-target="806" data-decimal="false">0</span>
-          <strong class="metric-label">country-year observations</strong>
-          <p class="metric-sub">ITU + World Bank merged dataset</p>
-        </div>
-        <div class="metric">
-          <span class="counter" data-target="0.48" data-decimal="true">0</span>
-          <strong class="metric-label">Random Forest R²</strong>
-          <p class="metric-sub">out-of-sample, held-out test set</p>
-        </div>
-        <div class="metric">
-          <span class="counter" data-target="2.8" data-decimal="true">0</span>
-          <strong class="metric-label">× more data</strong>
-          <p class="metric-sub">high-5G vs low-5G country-years</p>
+
+        <!-- Right: bento data panels -->
+        <div>
+          <div class="bento">
+
+            <!-- Traffic CAGR mini chart -->
+            <div class="bento-card span2 fade-in" style="--accent-bar:#136f63">
+              <p class="bento-title">Traffic growth by category — CAGR 2018–2025</p>
+              <div class="mini-bars">
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Video</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:#136f63"></div></div>
+                  <span class="mini-bar-val">34.8%</span>
+                </div>
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Social Networking</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:66%;background:#1D9E75"></div></div>
+                  <span class="mini-bar-val">23.2%</span>
+                </div>
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Other</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:63%;background:#5DCAA5"></div></div>
+                  <span class="mini-bar-val">21.9%</span>
+                </div>
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Audio</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:59%;background:#9FE1CB"></div></div>
+                  <span class="mini-bar-val">20.7%</span>
+                </div>
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Software Update</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:59%;background:#9FE1CB"></div></div>
+                  <span class="mini-bar-val">20.6%</span>
+                </div>
+                <div class="mini-bar-row">
+                  <span class="mini-bar-label">Web Browsing</span>
+                  <div class="mini-bar-track"><div class="mini-bar-fill" style="width:33%;background:#d9e2df"></div></div>
+                  <span class="mini-bar-val">11.4%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Video share stat -->
+            <div class="bento-card fade-in" style="--accent-bar:#e4572e">
+              <div class="bento-icon teal">📶</div>
+              <div class="bento-big">75.9%</div>
+              <p class="bento-label">Video share of total traffic in 2025<br><span style="color:#136f63;font-weight:600">↑ from 59.9% in 2018</span></p>
+            </div>
+
+            <!-- Regional 2025 GB/sub -->
+            <div class="bento-card span2 fade-in" style="--accent-bar:#e4572e">
+              <p class="bento-title">Regional consumption, 2025 (GB/month per subscription)</p>
+              <div class="diverge-grid">
+                <div class="diverge-item">
+                  <p class="diverge-region">India & South Asia</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:100%;background:linear-gradient(to right,#9FE1CB,#136f63)"></div>
+                    <span class="diverge-val">36.0</span>
+                  </div>
+                </div>
+                <div class="diverge-item">
+                  <p class="diverge-region">Western Europe</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:70%;background:linear-gradient(to right,#9FE1CB,#136f63)"></div>
+                    <span class="diverge-val">25.4</span>
+                  </div>
+                </div>
+                <div class="diverge-item">
+                  <p class="diverge-region">North America</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:69%;background:linear-gradient(to right,#9FE1CB,#136f63)"></div>
+                    <span class="diverge-val">24.7</span>
+                  </div>
+                </div>
+                <div class="diverge-item">
+                  <p class="diverge-region">North East Asia</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:63%;background:linear-gradient(to right,#9FE1CB,#136f63)"></div>
+                    <span class="diverge-val">22.8</span>
+                  </div>
+                </div>
+                <div class="diverge-item">
+                  <p class="diverge-region">Latin America</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:40%;background:linear-gradient(to right,#f5c4b3,#e4572e)"></div>
+                    <span class="diverge-val">14.5</span>
+                  </div>
+                </div>
+                <div class="diverge-item">
+                  <p class="diverge-region">Sub-Saharan Africa</p>
+                  <div class="diverge-bar-wrap">
+                    <div class="diverge-bar" style="width:15%;background:linear-gradient(to right,#f7c1c1,#E24B4A)"></div>
+                    <span class="diverge-val">5.3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Model results -->
+            <div class="bento-card fade-in model-card" style="--accent-bar:#f6ae2d">
+              <p class="bento-title">Panel OLS</p>
+              <div class="model-grid">
+                <div class="model-cell">
+                  <p class="model-cell-label">R²</p>
+                  <p class="model-cell-val counter" data-target="0.967" data-decimals="3">0.967</p>
+                  <p class="model-cell-note">adj R² = 0.962</p>
+                </div>
+                <div class="model-cell">
+                  <p class="model-cell-label">Growth/yr</p>
+                  <p class="model-cell-val counter" data-target="25.3" data-decimals="1" data-suffix="%">25.3%</p>
+                  <p class="model-cell-note">within-region, β=0.226</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Catch-up -->
+            <div class="bento-card fade-in model-card" style="--accent-bar:#f6ae2d">
+              <p class="bento-title">Catch-up OLS</p>
+              <div class="model-grid">
+                <div class="model-cell">
+                  <p class="model-cell-label">Slope</p>
+                  <p class="model-cell-val counter" data-target="-1.198" data-decimals="2">−1.20</p>
+                  <p class="model-cell-note">p = 0.026</p>
+                </div>
+                <div class="model-cell">
+                  <p class="model-cell-label">R²</p>
+                  <p class="model-cell-val counter" data-target="0.531" data-decimals="3">0.531</p>
+                  <p class="model-cell-note">n = 9 regions</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
+
+    <!-- ── Key tension callout ── -->
     <section class="band fade-in">
-      <div class="content">
-        <h2>Key Findings</h2>
-        <div class="findings-grid">
-          <div class="finding-card">
-            <div class="finding-icon">📶</div>
-            <h3>Traffic Levels</h3>
-            <p>Country-years with ≥20% estimated 5G penetration consume on average <strong>2.8×</strong> more data per subscription than those below 5% penetration.</p>
+      <div class="content" style="padding: 40px 0;">
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:40px;align-items:center;">
+          <div>
+            <p class="section-label">Core finding</p>
+            <h2 style="font-size:1.6rem;margin:0 0 8px;line-height:1.2">Catch-up in %<br>≠ convergence in GB</h2>
+            <p style="font-size:0.9rem;color:var(--muted);margin:0">The central digital equity tension of mobile connectivity.</p>
           </div>
-          <div class="finding-card">
-            <div class="finding-icon">📈</div>
-            <h3>Growth vs. Level</h3>
-            <p>The growth-rate correlation with 5G penetration is weak (r = −0.05), but the <strong>level correlation is 0.48</strong> — reflecting a market maturity effect, not a 5G failure.</p>
-          </div>
-          <div class="finding-card">
-            <div class="finding-icon">🤖</div>
-            <h3>Predictive Modeling</h3>
-            <p>Random Forest (R² = 0.48) outperforms XGBoost (R² = 0.41). <strong>5G penetration is the single strongest predictor</strong>, ahead of income, urbanization, and region.</p>
-          </div>
-          <div class="finding-card">
-            <div class="finding-icon">🌍</div>
-            <h3>Digital Divide</h3>
-            <p>Regional divergence has <strong>widened since 2019</strong>. Sub-Saharan Africa remains below 5 GB/sub/month while Europe exceeds 18 GB — a 4× gap that is growing.</p>
+          <div style="border-left:3px solid var(--line);padding-left:32px;">
+            <p style="font-size:1rem;color:var(--ink);line-height:1.7;margin:0">
+              Lower-consumption regions do grow faster in percentage terms. As the cross-sectional slope of −1.20 (p = 0.026) confirms this statistically. But because leading regions also keep growing, the <strong>absolute gap widened from 7.3 to 30.7 GB/month</strong> between 2018 and 2025. A user in India & South Asia gains ~3.4 GB/month more capacity each year. A user in Sub-Saharan Africa gains ~0.6 GB/month. The ratio is diverging, far behind converging.
+            </p>
           </div>
         </div>
-        <img class="figure-image fade-in" src="figures/eda_regional_trends.png" alt="Regional mobile traffic trends from 2019 to 2024">
-        <p class="caption">Figure 2: Average mobile traffic per subscription by region, 2019–2024. Europe and Middle East &amp; North Africa show the steepest growth trajectories, while Sub-Saharan Africa remains persistently low despite positive growth. The divergence between regions has widened over the period, suggesting that 5G rollout and income levels are compounding rather than closing the digital divide. Use the dropdown to isolate individual regions.</p>
-        <img class="figure-image fade-in" src="figures/rf_results.png" alt="Random Forest variable importance and predicted vs actual">
-        <p class="caption">Figure 4: Random Forest variable importance and prediction accuracy (R² = 0.48). Estimated 5G penetration rate is the single strongest predictor. <a href="viz.html">View interactive version →</a></p>
       </div>
     </section>
-    <section class="content">
-  <h2>Deep Dive: What the Data Shows</h2>
 
-  <div class="finding-block fade-in">
-    <div class="finding-block-text">
-      <span class="finding-tag">Research Question 1</span>
-      <h3>How much more data do high-5G markets consume?</h3>
-      <p>Country-years with at least 20% estimated 5G penetration consume on average <strong>2.8 times</strong> more data per subscription per month than country-years below 5% penetration. North America leads with an estimated 5G penetration of 68% and an average of 11.9 GB/sub/month in 2024, while Sub-Saharan Africa sits at 2.6% penetration and just 4.5 GB/sub/month — less than half the global average.</p>
-      <p>Importantly, this ratio reflects country-level market conditions rather than individual subscriber behaviour. High-5G markets also tend to have higher income, better fixed infrastructure, and more mature content ecosystems, all of which independently raise traffic levels.</p>
-    </div>
-    <div class="finding-block-stat">
-      <span class="big-stat">2.8×</span>
-      <span class="big-stat-label">more data in high-5G markets</span>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <div class="finding-block fade-in">
-    <div class="finding-block-stat">
-      <span class="big-stat">r = −0.05</span>
-      <span class="big-stat-label">growth rate correlation</span>
-      <span class="big-stat secondary-stat">r = 0.48</span>
-      <span class="big-stat-label">level correlation</span>
-    </div>
-    <div class="finding-block-text">
-      <span class="finding-tag">Research Question 2</span>
-      <h3>Does 5G penetration predict faster traffic growth?</h3>
-      <p>The answer is nuanced. The correlation between estimated 5G penetration and year-over-year traffic <em>growth rate</em> is −0.05 — essentially zero and slightly negative. This reflects a <strong>market maturity effect</strong>: high-5G countries already have very high traffic levels, so their percentage growth appears slower. Countries with low 5G penetration show high percentage growth because they are growing from a much smaller base.</p>
-      <p>However, the level correlation between 5G penetration and absolute traffic per subscription is <strong>0.48</strong> — a meaningful positive association. This confirms that 5G markets consume substantially more data in absolute terms, even if their growth rates look modest.</p>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <div class="finding-block fade-in">
-    <div class="finding-block-text">
-      <span class="finding-tag">Research Question 3</span>
-      <h3>When will 5G become the dominant traffic source?</h3>
-      <p>Using an Ericsson Mobility Report-calibrated traffic-share trajectory, 5G traffic is estimated to surpass 4G as the dominant source of mobile data around <strong>2026</strong>. This projection uses industry-level traffic share anchors rather than the ITU dataset directly, because ITU country-year exports do not split traffic by network generation.</p>
-      <p>This timeline varies significantly by region. East Asia and North America are likely to cross the 50% 5G traffic threshold earlier, while Sub-Saharan Africa and Latin America may not reach this point until well into the 2030s given current rollout trajectories.</p>
-    </div>
-    <div class="finding-block-stat">
-      <span class="big-stat">~2026</span>
-      <span class="big-stat-label">projected 5G traffic dominance globally</span>
-    </div>
-  </div>
-
-  <hr class="section-divider">
-
-  <div class="finding-block fade-in">
-    <div class="finding-block-stat">
-      <span class="big-stat">31%</span>
-      <span class="big-stat-label">of RF importance from 5G penetration alone</span>
-    </div>
-    <div class="finding-block-text">
-      <span class="finding-tag">Research Question 4</span>
-      <h3>What drives mobile traffic — is 5G the main factor?</h3>
-      <p>The Random Forest model identifies <strong>estimated 5G penetration rate as the single most important predictor</strong> (importance = 0.31), followed by mobile broadband penetration (0.20), log GDP per capita (0.20), and urbanization rate (0.16). Region and year contribute a smaller share.</p>
-      <p>This suggests that 5G does not operate in isolation. It is bundled with income growth, urbanization, and infrastructure development. Countries that deploy 5G tend to also have the economic conditions that independently drive higher data consumption. Disentangling the pure 5G effect from these correlated factors would require individual subscriber-level data, which was not available for this project.</p>
-      <p>The Random Forest (R² = 0.48, RMSE = 4.47) consistently outperformed XGBoost (R² = 0.41, RMSE = 4.77), suggesting meaningful non-linear interactions between 5G penetration and income level that tree ensembles capture better.</p>
-    </div>
-  </div>
-</section>
-    <section class="band fade-in">
-  <div class="content">
-    <h2>Regional Snapshot, 2024</h2>
-    <p class="lead-sm">Large structural differences persist across regions in both 5G deployment and data consumption intensity.</p>
-    <div class="region-table-wrap">
-      <table class="region-table">
-        <thead>
-          <tr>
-            <th>Region</th>
-            <th>Est. 5G Penetration</th>
-            <th>Avg Traffic (GB/sub/month)</th>
-            <th>5G Coverage</th>
-            <th>Interpretation</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>North America</strong></td>
-            <td>68.3%</td>
-            <td>11.9</td>
-            <td>95.2%</td>
-            <td>High penetration, moderate traffic — mature market with high fixed broadband substitution</td>
-          </tr>
-          <tr>
-            <td><strong>Europe</strong></td>
-            <td>36.8%</td>
-            <td>18.4</td>
-            <td>80.0%</td>
-            <td>Highest traffic despite moderate 5G — strong content consumption culture and video quality</td>
-          </tr>
-          <tr>
-            <td><strong>East Asia &amp; Pacific</strong></td>
-            <td>34.8%</td>
-            <td>13.8</td>
-            <td>61.1%</td>
-            <td>Rapid 5G rollout in China, South Korea, Japan driving regional average up</td>
-          </tr>
-          <tr>
-            <td><strong>Middle East &amp; North Africa</strong></td>
-            <td>17.0%</td>
-            <td>14.9</td>
-            <td>34.2%</td>
-            <td>High traffic relative to 5G penetration — early 5G adopters in Gulf states skew average</td>
-          </tr>
-          <tr>
-            <td><strong>South &amp; Southeast Asia</strong></td>
-            <td>12.8%</td>
-            <td>11.3</td>
-            <td>30.2%</td>
-            <td>Large population base with rapid mobile-first growth; India drives volume</td>
-          </tr>
-          <tr>
-            <td><strong>Latin America</strong></td>
-            <td>6.1%</td>
-            <td>11.2</td>
-            <td>17.5%</td>
-            <td>Low 5G penetration but comparable traffic to South Asia — mobile-first consumption pattern</td>
-          </tr>
-          <tr class="highlight-row">
-            <td><strong>Sub-Saharan Africa</strong></td>
-            <td>2.6%</td>
-            <td>4.5</td>
-            <td>10.7%</td>
-            <td>Lowest on all metrics — infrastructure gap compounds digital divide</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">† 5G penetration is a synthetic estimate based on ITU coverage data; see report Methods for derivation.</p>
-  </div>
-</section>
-    <section class="content">
-      <h2>Methods Snapshot</h2>
-      <p>The cleaned dataset merges ITU DataHub mobile-broadband traffic, mobile-broadband subscriptions, mobile-cellular subscriptions, and mobile population coverage indicators with World Bank GDP per capita and urbanization data. Country-level 5G subscription counts were not available in the local ITU exports, so the project uses an explicitly flagged synthetic estimate calibrated from observed ITU 5G population coverage, year, and region.</p>
-      <p>A tuned Random Forest model and an XGBoost comparison model predict monthly GB per active mobile-broadband subscription using estimated 5G penetration, mobile broadband penetration, log GDP per capita, urbanization, region, and year.</p>
-      <p class="note">† Based on synthetic 5G subscription estimate; see Methods for derivation.</p>
+    <!-- ── Methods snapshot ── -->
+    <section class="content fade-in" style="padding: 48px 0 32px;">
+      <p class="section-label">Methods</p>
+      <h2 style="font-size:1.3rem;margin:0 0 16px">Data & modeling approach</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div>
+          <p style="font-size:0.92rem;color:var(--muted);line-height:1.7;margin:0 0 12px">All data come from Ericsson Mobility Report CSV exports. Four datasets: traffic by category (EB/month), GB per subscription by region, 5G population coverage, and quarterly total traffic with YoY growth.</p>
+          <p style="font-size:0.92rem;color:var(--muted);line-height:1.7;margin:0">RQ1–3 use descriptive analysis and correlation. RQ4 uses two OLS models: a panel regression with region fixed effects (n=72 region-year observations) and a cross-sectional catch-up test (n=9 regions).</p>
+        </div>
+        <div style="background:var(--bg);border-radius:10px;padding:20px;font-size:0.85rem;color:var(--muted);line-height:1.8">
+          <p style="margin:0 0 4px;font-weight:600;color:var(--ink);font-size:0.88rem">Model A — Panel OLS</p>
+          <p style="margin:0 0 12px;font-family:monospace;font-size:0.82rem">log(GB/month)ᵢₜ = αᵢ + β·yearₜ + εᵢₜ</p>
+          <p style="margin:0 0 4px;font-weight:600;color:var(--ink);font-size:0.88rem">Model B — Cross-sectional OLS</p>
+          <p style="margin:0;font-family:monospace;font-size:0.82rem">CAGRᵢ = α + β·GB₂₀₁₈,ᵢ + εᵢ</p>
+        </div>
+      </div>
     </section>
-    <section class="content fade-in">
-  <h2>Limitations &amp; Future Work</h2>
-  <div class="limitations-grid">
-    <div class="limitation-card">
-      <h4>🔬 Synthetic 5G Data</h4>
-      <p>Country-level 5G subscription counts were not available from ITU exports. The 5G penetration variable is a synthetic estimate derived from coverage data and region-year adoption factors. Results should be interpreted as indicative macro patterns rather than precise causal estimates.</p>
-    </div>
-    <div class="limitation-card">
-      <h4>🌐 Ecological Study Design</h4>
-      <p>Countries are the unit of observation. Associations identified here cannot be directly extrapolated to individual subscriber behaviour — a country with high 5G penetration may show high traffic for reasons unrelated to 5G adoption itself.</p>
-    </div>
-    <div class="limitation-card">
-      <h4>📊 Single Data Source</h4>
-      <p>All traffic and network variables come from ITU DataHub, which may have reporting gaps for lower-income countries. The dataset excludes traffic that transits private peering points and may undercount some regions.</p>
-    </div>
-    <div class="limitation-card">
-      <h4>🔭 Future Directions</h4>
-      <p>Future work could incorporate GSMA Intelligence or Ericsson Mobility Visualizer data for observed 5G subscription counts, add operator-level pricing and spectrum data as features, and extend the analysis to 2025–2026 as 5G approaches traffic dominance globally.</p>
-    </div>
-  </div>
-</section>
-    <section class="content fade-in">
-      <h2>Data Sources</h2>
-      <div class="sources-grid">
-        <div class="source-card">
-          <strong>ITU DataHub</strong>
-          <p>Mobile broadband traffic, subscriptions, and 5G population coverage by country, 2019–2024.</p>
-          <a href="https://datahub.itu.int/data/" target="_blank">datahub.itu.int →</a>
-        </div>
-        <div class="source-card">
-          <strong>World Bank Open Data</strong>
-          <p>GDP per capita (current USD) and urban population share by country and year.</p>
-          <a href="https://data.worldbank.org/" target="_blank">data.worldbank.org →</a>
-        </div>
+
+    <!-- ── Data sources ── -->
+    <section class="content fade-in" style="padding: 0 0 52px;">
+      <p class="section-label">Data sources</p>
+      <div class="source-row">
         <div class="source-card">
           <strong>Ericsson Mobility Report</strong>
-          <p>Industry benchmarks for 5G traffic share trajectory and composition estimates.</p>
+          <p>Traffic by category, GB per subscription by region, 5G population coverage, quarterly traffic volume — all directly observed, 2018–2025.</p>
           <a href="https://www.ericsson.com/en/reports-and-papers/mobility-report" target="_blank">ericsson.com →</a>
+        </div>
+        <div class="source-card">
+          <strong>Ericsson Mobility Visualizer</strong>
+          <p>Interactive data export tool used to download structured CSV files by region, technology, and metric for all seven Ericsson datasets.</p>
+          <a href="https://www.ericsson.com/en/reports-and-papers/mobility-report/dataforecasts" target="_blank">Mobility Visualizer →</a>
+        </div>
+        <div class="source-card">
+          <strong>Analysis pipeline</strong>
+          <p>Python (pandas, statsmodels, plotly), Quarto for reproducible rendering. All code in <code>analysis/analysis.qmd</code>.</p>
+          <a href="https://github.com/banxiafire/JSC370_final_mobile" target="_blank">View on GitHub →</a>
         </div>
       </div>
     </section>
+
   </main>
+
   <footer>
-    <p>Website: <a href="https://banxiafire.github.io/JSC370_final_mobile">https://banxiafire.github.io/JSC370_final_mobile</a>. Data sources: <a href="https://datahub.itu.int/data/">ITU DataHub</a> and <a href="https://data.worldbank.org/">World Bank Open Data</a>.</p>
+    <p>JSC370 Final Project · University of Toronto · 2025. Data: <a href="https://www.ericsson.com/en/reports-and-papers/mobility-report">Ericsson Mobility Report</a>. Website: <a href="https://banxiafire.github.io/JSC370_final_mobile">banxiafire.github.io/JSC370_final_mobile</a></p>
   </footer>
 </body>
 </html>

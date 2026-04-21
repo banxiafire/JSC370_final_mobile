@@ -1,13 +1,17 @@
 feature,importance
-5g_penetration_rate,0.31345224007750794
-mobile_broadband_penetration,0.20276112620028466
-log_gdp_per_capita,0.19824580297776911
-urbanization_rate,0.1588728437804171
-year,0.042092260141373454
-region_Middle East & North Africa,0.028687923942149373
-region_Sub-Saharan Africa,0.024312122124875945
-region_East Asia & Pacific,0.016907041794446315
-region_Europe,0.009573603365848336
-region_Latin America,0.0028965240006718447
-region_South & Southeast Asia,0.0018925432388326212
-region_North America,0.0003059683558234589
+5g_x_broadband,0.15995419940292144
+log_gdp_per_capita,0.14946413370703246
+urbanization_rate,0.1309963614232968
+mobile_broadband_penetration,0.11526242479449011
+broadband_sq,0.10944728783736898
+5g_sq,0.08712398315828751
+5g_penetration_rate,0.07732751346244571
+5g_x_gdp,0.05672088972479901
+year,0.03564007936934361
+region_Sub-Saharan Africa,0.024305462427615374
+region_Middle East & North Africa,0.02257469591095865
+region_East Asia & Pacific,0.017514336255516138
+region_Europe,0.00889263325068422
+region_Latin America,0.002292455943852742
+region_South & Southeast Asia,0.002042578298923144
+region_North America,0.00044096503246407676
