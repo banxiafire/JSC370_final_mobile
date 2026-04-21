@@ -2,7 +2,7 @@
 
 **Website:** https://banxiafire.github.io/JSC370_final_mobile
 
-A data science project examining traffic composition, regional divergence, and 5G coverage across global mobile networks from 2018 to 2025. All data come directly from Ericsson Mobility Report exports — no synthetic estimates are used.
+A data science project examining traffic composition, regional divergence, and 5G coverage across global mobile networks from 2018 to 2025. All data come directly from Ericsson Mobility Report exports.
 
 ## Research Questions
 
@@ -64,22 +64,6 @@ JSC370-finalproject/
 ├── style.css                 # Website stylesheet
 ├── build_project.py          # Orchestration script (runs quarto render)
 └── README.md
-
-## Statistical Methods
-
-**RQ1–3:** Descriptive analysis, CAGR computation, Pearson correlation
-
-**RQ4 — Model A (Panel OLS with region fixed effects):**
-
-$$\log(\text{GB/month})_{it} = \alpha_i + \beta \cdot \text{year}_t + \varepsilon_{it}$$
-
-Region fixed effects absorb time-invariant structural differences (income, infrastructure, pricing). The year coefficient isolates the within-region temporal growth trend. n = 72 region-year observations, R² = 0.967.
-
-**RQ4 — Model B (Cross-sectional catch-up OLS):**
-
-$$\text{CAGR}_i = \alpha + \beta \cdot \text{GB}_{2018,i} + \varepsilon_i$$
-
-One observation per region. Tests whether lower-baseline regions grew faster in percentage terms. n = 9 regions, slope = −1.198 (p = 0.026), R² = 0.531.
 
 ## Interactive Visualizations
 
