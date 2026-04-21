@@ -199,6 +199,12 @@ gb_model["year_centered"] = gb_model["Year"] - 2018
 model_fe = smf.ols("log_gb ~ year_centered + C(Region)", data=gb_model).fit()
 model_catchup = smf.ols("CAGR_pct ~ GB_2018", data=cagr_reg).fit()
 
+region_alpha = {}
+for region in sorted(gb_model["Region"].unique()):
+    region_alpha[region] = model_fe.params["Intercept"] + model_fe.params.get(f"C(Region)[T.{region}]", 0.0)
+alpha_i_variance = pd.Series(region_alpha).var(ddof=1)
+epsilon_variance = model_fe.mse_resid
+
 within_region_growth_pct = (np.exp(model_fe.params["year_centered"]) - 1) * 100
 panel_n = len(gb_model)
 catchup_n = len(cagr_reg)
@@ -231,13 +237,23 @@ $$
 \log(\text{GB/month})_{it} = \alpha_i + \beta \cdot \text{year}_t + \varepsilon_{it}
 $$
 
-Where alpha_i differs across different regions.
+$i$ represents different regions. eg. $i = 1$ represents North America.
+$t$ represents different years. eg. $t = 0$ represents Year 2018.
+$\alpha_i$ is the baseline which differs across different regions. e.g. $\alpha_1$ represents the specefic basedline for $\log(\text{GB/month})$ in North America in 2018. 
+$\beta$ is the fixed effect for increasement in $\log(\text{GB/month})$ in each year, keeps the same for all 9 regions.
+$\varepsilon_{it}$ is the variance for each prediction. $Var(\varepsilon_{it})$ keeps the same for all i and t.
 
 **Model B — Cross-sectional OLS (catch-up test):** Model calculates each region's 2018–2025 compound annual growth rate (CAGR) on its 2018 baseline consumption level. A negative coefficient on the baseline indicates the regions has low data consumption rate is catching up, with low-baseline regions growing faster in term of percentage. An important insight is that percentage catch-up does not necessarily reduce the gap in absolute amount; that question is assessed separately by comparing absolute GB/month differences in 2018 and 2025.
 
 $$
 \text{CAGR}_i = \alpha + \beta \cdot \text{GB}_{2018,i} + \varepsilon_i
 $$
+
+$\text{CAGR}_i = \sqrt[7]{\frac{\text{GB}_{2025,i}}{\text{GB}_{2018,i}}} - 1$
+$i$ represents different regions. eg. $i = 1$ represents North America.
+$\alpha$ is the shared baseline. e.g. $\alpha$ represents the basedline $CAGR$ for $\log(\text{GB/month})$ for regions with 0 GB/month data useage in 2018. 
+$\beta$ is the fixed effect for increasement in $CAGR$ for each addtional $GB/month$ used in 2018, keeps the same for all 9 regions.
+$\varepsilon_{i}$ is the variance for each prediction. $Var(\varepsilon_{i})$ keeps the same for all i.
 
 The two OLS models above has advantages in interpretability. The coefficients owns direct economic meaning, making them suitable for panel data with small sample sizes. But they force assumptions of linear relationships, such as assuming uniform effort of the impact of 5G coverage on per capita data traffic, but in reality, the diffusion effect tends to be non-linear. GAM automatically fits non-linear relationships using spline functions, without specifying the function form in advance, making it flexible in capturing the curve effects of technology diffusion. But with extremely small samples, the degrees of freedom are insufficient to prevent overfitting, resulting in unreliable outputs, and the coefficients lacks intuitive causal interpretation. Therefore, the data scale of this project determines that OLS is a more reasonable choice.
 
@@ -394,17 +410,18 @@ Even with those limitations, the pattern is consistent with the industry expecta
 #| output: asis
 panel_table = pd.DataFrame(
     {
-        "Term": ["year_centered"],
-        "Coef": [model_fe.params["year_centered"]],
-        "Std. Err.": [model_fe.bse["year_centered"]],
-        "t": [model_fe.tvalues["year_centered"]],
-        "p-value": [model_fe.pvalues["year_centered"]],
+        "Term": ["year_centered", "Var(alpha_i)", "Var(epsilon)"],
+        "Coef": [model_fe.params["year_centered"], alpha_i_variance, epsilon_variance],
+        "Std. Err.": [model_fe.bse["year_centered"], "", ""],
+        "t": [model_fe.tvalues["year_centered"], "", ""],
+        "p-value": [model_fe.pvalues["year_centered"], "", ""],
     }
 )
-display(Markdown("**Table 2: Panel OLS key coefficient**\n\n" + md_table(panel_table, ".3f")))
+display(Markdown("**Table 2: Panel OLS key coefficient and variance components**\n\n" + md_table(panel_table, ".3f")))
 display(
     Markdown(
-        f"Panel model statistics: n = {panel_n}, R-squared = {model_fe.rsquared:.3f}, adjusted R-squared = {model_fe.rsquared_adj:.3f}."
+        f"Panel model statistics: n = {panel_n}, R-squared = {model_fe.rsquared:.3f}, adjusted R-squared = {model_fe.rsquared_adj:.3f}. "
+        f"Var(alpha_i) is computed from the estimated region fixed-effect intercepts; Var(epsilon) is the residual variance."
     )
 )
 ```
@@ -469,7 +486,7 @@ plt.show()
 
 ### Model A: Panel OLS with Region Fixed Effects
 
-The panel OLS model predicts log(GB/month) on year, centered at 2018, and region fixed effects across all 72 region-year observations. The year coefficient is 0.226 (p < 0.001), implying that within each region, per-subscription consumption grew at approximately 25.3% per year on average after isolating time-invariant regional differences. The model achieves R² = 0.967, indicating that year and region fixed effects together explain 96.7% of the variance in log(GB/month), dispite the differences in starting amount persists.
+The panel OLS model predicts log(GB/month) on year, centered at 2018, and region fixed effects across all 72 region-year observations. The year coefficient is 0.226 (p < 0.001), implying that within each region, per-subscription consumption grew at approximately 25.3% per year on average after isolating time-invariant regional differences. The model achieves R² = 0.967, indicating that year and region fixed effects together explain 96.7% of the variance in log(GB/month), dispite the differences in starting amount persists. ICC = 0.9369, indicating significant inter-regional differences.
 
 The regional fixed effects absorbs persistent differences in income level, infrastructure quality, regulatory environment, pricing structure, and device ecosystem maturity etc. The year coefficient therefore captures the common temporal growth trend in mobile data consumption that appears across all regions.
 
