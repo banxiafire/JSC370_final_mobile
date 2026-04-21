@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="JSC370 Final Project">
+<meta name="author" content="JSC370 Final Project, Nanxin Li">
 
 <title>What Drives Mobile Data Consumption? Traffic Composition, Regional Divergence, and 5G Coverage, 2018–2025</title>
 <style>
@@ -2350,7 +2350,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>JSC370 Final Project </p>
+             <p>JSC370 Final Project, Nanxin Li </p>
           </div>
   </div>
     
@@ -2365,33 +2365,35 @@ window.Quarto = {
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>Mobile data traffic has grown from roughly 16 EB/month in early 2018 to more than 200 EB/month by late 2025, driven by video streaming, social media, and the global expansion of smartphone connectivity. Understanding what drives this growth, and where disparities remain, matters for network planning, spectrum policy, and digital equity.</p>
-<p>This project uses data from the Ericsson Mobility Report, the telecommunications industry’s most cited source for mobile network traffic measurements and forecasts. All variables are directly reported in Ericsson’s published CSV exports; no synthetic estimates are used.</p>
-<p>Four research questions guide the analysis. First, how has global mobile traffic composition changed from 2018 to 2025, and which categories are driving growth? Second, how large are regional differences in per-subscription data consumption, and is the gap widening or narrowing? Third, what is the empirical relationship between global 5G population coverage and per-subscription consumption? Fourth, do lower-consumption regions grow faster than high-consumption regions, and if so, does catch-up dynamics reduce or widen the absolute gap over time?</p>
+<p>Mobile data traffic has grown from roughly 16 EB/month in early 2018 to more than 200 EB/month by late 2025, driven by video streaming, social media, and the global expansion of smartphone connectivity. INvestigating what drives this growth, and where the inbalance remain, matters for network planning, spectrum policy, and digital equity.</p>
+<p>This project uses data from the Ericsson Mobility Report / Data portal, the telecommunications industry’s most cited source for mobile network traffic measurements and forecasts. All variables are directly reported in Ericsson’s published Excel exports.</p>
+<p>4 research questions are included in this report. First, how has global mobile traffic composition changed from 2018 to 2025, and which categorie are driving growth? Second, how large are inter-regional differences in per-subscription data consumption, and is the gap widening or narrowing? Third, what is the empirical relationship between global 5G population coverage and per-subscription consumption? Fourth, do regions with low data useage per subcription grow faster than regions with high data useage per subsciption?</p>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <section id="data-sources" class="level3">
 <h3 class="anchored" data-anchor-id="data-sources">Data Sources</h3>
-<p>All data come from the Ericsson Mobility Report, accessed via the Ericsson Mobility Visualizer. Four datasets are used:</p>
+<p>All data were aggregated from the Ericsson Mobility Report, accessed through the Ericsson Mobility Visualizer. Four datasets are used:</p>
 <ul>
-<li><strong>Network Data Category</strong> (global, 2018–2025): monthly mobile traffic in EB/month broken down into seven categories — Video, Social Networking, Web Browsing, Audio, File Sharing, Software Update, and Other.</li>
-<li><strong>GB per Subscription</strong> (regional, 2018–2025): average monthly data consumption per smartphone subscription by region.</li>
-<li><strong>Population Coverage</strong> (global, 2018–2025): share of world population covered by 5G networks.</li>
-<li><strong>Mobile Network Traffic and Growth</strong> (global, quarterly, 2018–2025): total mobile data volume (EB/month) and year-over-year growth rate.</li>
+<li><strong>Mobile data traffic by application category</strong> (global, 2018–2025): monthly mobile traffic in EB/month broken down into seven categories eg. Video, Social Networking, Web Browsing, Audio, File Sharing, Software Update, and Other.</li>
+<li><strong>Mobile data traffic per device per month</strong> (regional, 2018–2025): average monthly data consumption per smartphone subscription by region.</li>
+<li><strong>Population coverage</strong> (global, 2018–2025): share of world population covered by 5G networks.</li>
+<li><strong>Mobile network traffic</strong> (global, quarterly, 2018–2025): total mobile data volume (EB/month) and year-over-year growth rate.</li>
 </ul>
-<p>The Ericsson extracts used here provide nine consistent regional series after excluding the global total and overlapping GCC aggregate: <code>C &amp; E Europe</code>, <code>India &amp; South Asia</code>, <code>Latin America</code>, <code>Middle East &amp; Africa</code>, <code>North America</code>, <code>North East Asia</code>, <code>SE Asia &amp; Oceania</code>, <code>Sub-Saharan Africa</code>, and <code>Western Europe</code>.</p>
+<p>The dataset used here provide nine regional data after excluding overlapping regions. They are <code>C &amp; E Europe</code>, <code>India &amp; South Asia</code>, <code>Latin America</code>, <code>Middle East &amp; Africa</code>, <code>North America</code>, <code>North East Asia</code>, <code>SE Asia &amp; Oceania</code>, <code>Sub-Saharan Africa</code>, and <code>Western Europe</code>.</p>
 </section>
 <section id="analytical-approach" class="level3">
 <h3 class="anchored" data-anchor-id="analytical-approach">Analytical Approach</h3>
-<p>Research Questions 1–3 use descriptive analysis and correlation. Research Question 4 uses two complementary statistical models.</p>
-<p><strong>Model A — Panel OLS with region fixed effects:</strong> The target variable is log(GB/month) per subscription. The model includes region fixed effects, absorbing all time-invariant regional characteristics such as income level, infrastructure quality, and device ecosystem maturity, and a continuous year variable. This isolates the within-region time trend in consumption while controlling for persistent structural differences between regions.</p>
+<p>Research Questions 1, 2, 3 uses descriptive analysis and correlation. Research Question 4 uses two complementary statistical models.</p>
+<p><strong>Model A — Panel OLS with region fixed effects:</strong> The target variable is log(GB/month) per subscription across different regions. The model include regional fixed effects, absorbing all time-invariant regional features such as income level, infrastructure quality, and device ecosystem maturity, and a continuous year variable. This isolates the within-region time trend in data useage while controlling structural differences between regions.</p>
 <p><span class="math display">\[
 \log(\text{GB/month})_{it} = \alpha_i + \beta \cdot \text{year}_t + \varepsilon_{it}
 \]</span></p>
-<p><strong>Model B — Cross-sectional OLS (catch-up test):</strong> Using one observation per region, the model regresses each region’s 2018–2025 compound annual growth rate (CAGR) on its 2018 baseline consumption level. A negative coefficient on the baseline confirms a catch-up effect, with lower-baseline regions growing faster in percentage terms. An important caveat is that percentage catch-up does not necessarily reduce the absolute consumption gap; that question is assessed separately by comparing absolute GB/month differences in 2018 and 2025.</p>
+<p>Where alpha_i differs across different regions.</p>
+<p><strong>Model B — Cross-sectional OLS (catch-up test):</strong> Model calculates each region’s 2018–2025 compound annual growth rate (CAGR) on its 2018 baseline consumption level. A negative coefficient on the baseline indicates the regions has low data consumption rate is catching up, with low-baseline regions growing faster in term of percentage. An important insight is that percentage catch-up does not necessarily reduce the gap in absolute amount; that question is assessed separately by comparing absolute GB/month differences in 2018 and 2025.</p>
 <p><span class="math display">\[
 \text{CAGR}_i = \alpha + \beta \cdot \text{GB}_{2018,i} + \varepsilon_i
 \]</span></p>
+<p>The two OLS models above has advantages in interpretability. The coefficients owns direct economic meaning, making them suitable for panel data with small sample sizes. But they force assumptions of linear relationships, such as assuming uniform effort of the impact of 5G coverage on per capita data traffic, but in reality, the diffusion effect tends to be non-linear. GAM automatically fits non-linear relationships using spline functions, without specifying the function form in advance, making it flexible in capturing the curve effects of technology diffusion. But with extremely small samples, the degrees of freedom are insufficient to prevent overfitting, resulting in unreliable outputs, and the coefficients lacks intuitive causal interpretation. Therefore, the data scale of this project determines that OLS is a more reasonable choice.</p>
 </section>
 </section>
 </section>
@@ -2477,9 +2479,9 @@ Table 1
 </div>
 </figure>
 </div>
-<p>Figure 1 shows that video streaming dominated global mobile traffic throughout 2018–2025 and continued to grow in absolute volume, from 13.4 EB/month in 2018 to 108.4 EB/month in 2025. Its percentage share also increased materially, rising from 59.9% to 75.9% of total traffic over the period.</p>
-<p>Table 1 reports compound annual growth rates by category for 2018–2025. Video grew fastest at 34.8% per year, followed by Social Networking at 23.2% and Other at 21.9%. Web Browsing showed the slowest growth at 11.4%, consistent with the shift toward app-based and video-centric mobile usage. Software Update traffic also grew quickly, reflecting the rising size and frequency of operating system and application updates on connected devices.</p>
-<p>These compositional patterns imply that network capacity planning must remain video-centric while still building headroom for social and cloud-based categories. The structural stability of video’s dominance means long-run traffic forecasts are highly sensitive to assumptions about video resolution, autoplay behavior, and premium streaming adoption.</p>
+<p>Figure 1 shows that video streaming keeps dominaing global mobile traffic throughout 2018 to 2025, and it’s continued to grow in absolute volume, from 13.4 EB/month in 2018 to 108.4 EB/month in 2025. Its percentage share also increased, rising from 59.9% to 75.9% of total traffic over the period.</p>
+<p>Table 1 shows monthly total / annual growth rates by category for 2018–2025. Video usage grews fastest at 34.8% per year, followed by Social Networking at 23.2% and Other at 21.9%. Web Browsing showed the slowest growth at 11.4%, consistent with the shift from web-page based apps to mobile apps. Software Update traffic also grew quickly, reflecting the rising size and preference of operating system and application updates on connected devices over 5G network.</p>
+<p>These growth patterns implies that network capacity planning must remain video-centric while still keep remaining capacity for social and cloud-based categories. The consistancy of video’s dominance means long-run traffic forecasting are highly sensitive to assumptions about video resolution and autoplay behavior.</p>
 </section>
 <section id="rq2-regional-divergence" class="level2">
 <h2 class="anchored" data-anchor-id="rq2-regional-divergence">RQ2: Regional Divergence</h2>
@@ -2497,8 +2499,8 @@ Figure 2: GB/month per smartphone subscription by region, 2018–2025.
 </div>
 </div>
 </div>
-<p>Figure 2 shows that India &amp; South Asia leads all regions in per-subscription consumption by 2025 at 36.0 GB/month, a result consistent with aggressive low-cost unlimited data plans that made India one of the world’s highest per-subscriber traffic markets despite its lower income level. Sub-Saharan Africa remains the lowest at 5.3 GB/month in 2025.</p>
-<p>The absolute gap between the highest- and lowest-consuming regions widened from 7.3 GB/month in 2018 to 30.7 GB/month in 2025. This widening occurred despite positive growth in every region, illustrating a central digital equity tension: percentage growth in lagging regions is not sufficient to close absolute gaps when leading regions are also growing rapidly.</p>
+<p>Figure 2 shows that India &amp; South Asia leads all regions in terms of per-subscription consumption by 2025 at 36.0 GB/month, a result consistent with aggressive low-cost unlimited data plans that made India one of the world’s highest per-subscriber traffic markets despite its lower income level. Sub-Saharan Africa remains the lowest at 5.3 GB/month in 2025.</p>
+<p>The absolute gap between the highest and lowest data consuming regions raised from 7.3 GB/month in 2018 to 30.7 GB/month in 2025. This widening occurred disregarding positive growth in every region, showing a digital equity tension, as percentage growth in lagging regions is not sufficient enough to close absolute gaps when leading regions are also growing rapidly.</p>
 </section>
 <section id="rq3-5g-coverage-and-world-average-consumption" class="level2">
 <h2 class="anchored" data-anchor-id="rq3-5g-coverage-and-world-average-consumption">RQ3: 5G Coverage and World-Average Consumption</h2>
@@ -2516,9 +2518,9 @@ Figure 3: Global 5G population coverage (%) versus world-average per-subscripti
 </div>
 </div>
 </div>
-<p>Figure 3 plots global 5G population coverage against world-average per-subscription consumption for 2018–2025. The Pearson correlation is r = 0.994 (p = 0.0000), indicating a very strong positive association. In the simple OLS line, each additional percentage point of 5G coverage corresponds to approximately 0.249 GB/month in per-subscription consumption.</p>
-<p>Two important caveats apply. First, year is a strong confounding variable: both 5G coverage and per-subscription consumption increase monotonically over time, so the correlation partly reflects shared temporal trends rather than a direct 5G effect. Second, with only eight yearly observations, the analysis has limited statistical power for structural interpretation. The finding should therefore be read as descriptive co-movement rather than causal evidence.</p>
-<p>Even with those caveats, the pattern is consistent with the industry expectation that 5G enables higher-bandwidth applications, especially higher-resolution video and FWA, that raise per-subscription consumption beyond what speed improvements alone would predict.</p>
+<p>Figure 3 plots global 5G population coverage against world-average per-subscription consumption for 2018–2025. The Pearson correlation is 0.994 accompanied by p = 0.0000, indicating a very strong positive association. In the OLS line, each additional percentage point of 5G coverage corresponds to approximately 0.249 GB/month in per-subscription consumption.</p>
+<p>Two limitations are worth noticing. First, year(time) is a strong confounding variable, as both 5G coverage and per-subscription consumption increase monotonically over time, so the correlation partially reflects shared temporal trends rather than a direct ‘5G effect’. Second, with only eight years of observations, the analysis has limited statistical power for structural interpretation. The finding should therefore be treated as a descriptive insight rather than a causal evidence.</p>
+<p>Even with those limitations, the pattern is consistent with the industry expectation that 5G enables higher-bandwidth applications, especially higher-resolution video and FWA, that raise per-subscription consumption beyond what speed improvements alone would contribute.</p>
 </section>
 <section id="rq4-modeling-catch-up-and-divergence" class="level2">
 <h2 class="anchored" data-anchor-id="rq4-modeling-catch-up-and-divergence">RQ4: Modeling Catch-Up and Divergence</h2>
@@ -2593,26 +2595,26 @@ Figure 4: Modeling results for RQ4. Left panel shows the cross-sectional OLS of
 </div>
 <section id="model-a-panel-ols-with-region-fixed-effects" class="level3">
 <h3 class="anchored" data-anchor-id="model-a-panel-ols-with-region-fixed-effects">Model A: Panel OLS with Region Fixed Effects</h3>
-<p>The panel OLS model regresses log(GB/month) on year, centered at 2018, and region fixed effects across all 72 region-year observations. The year coefficient is 0.226 (p &lt; 0.001), implying that within each region, per-subscription consumption grew at approximately 25.3% per year on average after controlling for time-invariant regional differences. The model achieves R² = 0.967, indicating that year and region fixed effects together explain 96.7% of the variance in log(GB/month).</p>
-<p>The region fixed effects absorb persistent differences in income level, infrastructure quality, regulatory environment, pricing structure, and device ecosystem maturity. The year coefficient therefore captures the common temporal growth trend in mobile data consumption that appears across all regions.</p>
+<p>The panel OLS model predicts log(GB/month) on year, centered at 2018, and region fixed effects across all 72 region-year observations. The year coefficient is 0.226 (p &lt; 0.001), implying that within each region, per-subscription consumption grew at approximately 25.3% per year on average after isolating time-invariant regional differences. The model achieves R² = 0.967, indicating that year and region fixed effects together explain 96.7% of the variance in log(GB/month), dispite the differences in starting amount persists.</p>
+<p>The regional fixed effects absorbs persistent differences in income level, infrastructure quality, regulatory environment, pricing structure, and device ecosystem maturity etc. The year coefficient therefore captures the common temporal growth trend in mobile data consumption that appears across all regions.</p>
 </section>
 <section id="model-b-cross-sectional-catch-up-test" class="level3">
 <h3 class="anchored" data-anchor-id="model-b-cross-sectional-catch-up-test">Model B: Cross-Sectional Catch-Up Test</h3>
-<p>The cross-sectional OLS model regresses each region’s 2018–2025 CAGR on its 2018 baseline consumption across 9 regions. The slope coefficient is -1.198 (p = 0.026), indicating that a one GB/month higher 2018 baseline is associated with a 1.20 percentage point lower annual growth rate over 2018–2025. This supports a catch-up hypothesis at conventional significance levels.</p>
-<p>Critically, percentage catch-up in growth rates does not imply convergence in absolute consumption levels. The absolute gap between the highest- and lowest-consuming regions widened from 7.3 to 30.7 GB/month over 2018–2025, even as lower-baseline regions grew faster in percentage terms. For digital equity, this widening in absolute connectivity capacity is the more policy-relevant result.</p>
+<p>The cross-sectional OLS model regresses across each region’s 2018–2025 CAGR on its 2018 baseline consumption. The slope coefficient is -1.198 with p = 0.026, indicating that a one GB/month higher in data consumption in 2018 baseline is associated with a 1.20 percentage point lower annual growth rate over 2018–2025. This supports a catch-up hypothesis at relatively trustworthy significance levels.</p>
+<p>However, percentage catch-up in growth rates does not imply convergence in absolute mobile data consumptions. The absolute gap between the highest- and lowest-consuming regions widens from 7.3 to 30.7 GB per month over 2018 to 2025, even as lower-baseline regions grew faster in terms of percentage. For digital equity, the raising gap in absolute connectivity capacity is a more critical insight.</p>
 </section>
 </section>
 <section id="interactive-visualizations" class="level2">
 <h2 class="anchored" data-anchor-id="interactive-visualizations">Interactive Visualizations</h2>
-<p>The project website includes five interactive visualizations in <code>viz.html</code>. They complement the static report by allowing hover inspection, toggles, dropdown filtering, animation, and dual-axis exploration for the quarterly traffic series.</p>
+<p>The project includes five interactive visualizations on website and in <code>viz.html</code>. They allows hover inspection, toggles, dropdown filtering, animation, 2 axis exploration for the quarterly traffic series and a global year-increase visualization.</p>
 </section>
 <section id="conclusions-and-summary" class="level2">
 <h2 class="anchored" data-anchor-id="conclusions-and-summary">Conclusions and Summary</h2>
-<p><strong>Traffic composition:</strong> Video is the structurally dominant category of global mobile traffic, accounting for most EB/month throughout 2018–2025. In this Ericsson extract it is also the fastest-growing category at 34.8% per year, while Social Networking is the fastest-growing non-video category at 23.2% per year. Web Browsing grew slowest, reinforcing the shift toward app-based and streaming-heavy mobile use.</p>
-<p><strong>Regional divergence:</strong> Per-subscription consumption grew across all regions, but the absolute gap between the highest- and lowest-consuming regions widened from 7.3 to 30.7 GB/month. India &amp; South Asia leads by 2025 at 36.0 GB/month, while Sub-Saharan Africa remains lowest at 5.3 GB/month.</p>
-<p><strong>5G and consumption:</strong> The Pearson correlation between global 5G coverage and world-average per-subscription consumption is r = 0.994, with year acting as a major confounding factor. The association is strong but should not be interpreted causally from global time-series data alone.</p>
-<p><strong>Catch-up dynamics:</strong> Panel OLS confirms a within-region annual growth rate of about 25.3% per year after controlling for region fixed effects. The cross-sectional catch-up test finds a negative slope (-1.198, p = 0.026) on baseline consumption, supporting percentage catch-up. But catch-up in growth rates has not prevented widening in absolute consumption gaps, which is the more policy-relevant measure for digital equity.</p>
-<p>The main limitation is data granularity: with 9 regions and 8 years, statistical power remains limited. Country-level rollout and traffic data would enable stronger causal inference. Future work should also incorporate 5G-specific subscription counts and traffic volumes, which Ericsson has increasingly begun to publish, to measure the 5G effect on consumption more directly than coverage alone allows.</p>
+<p><strong>Traffic composition:</strong> Video is the structurally dominant category of global mobile traffic, contributing the most EB/month throughout 2018–2025. In Ericsson’s report, it is also the fastest-growing category at 34.8% per year, while Social Networking is the fastest-growing non-video category at 23.2% per year. Web Browsing grows slowest, back-proofing the shift toward app-based and streaming-heavy mobile use.</p>
+<p><strong>Regional divergence:</strong> Per-subscription consumption grows significantly across all regions, but the absolute gap between the highest and lowest mobile data consuming regions widened from 7.3 to 30.7 GB/month. India &amp; South Asia leads by 2025 at 36.0 GB/month, while Sub-Saharan Africa remains the lowest at 5.3 GB/month.</p>
+<p><strong>5G and consumption:</strong> The Pearson correlation between global 5G coverage and world-average per-subscription consumption is 0.994, accompanied by a low p, with year contributing as a major confounding factor. The association is strong but should not be interpreted isolated from other time-series data.</p>
+<p><strong>Catch-up dynamics:</strong> Panel OLS shows a within-region annual growth rate of about 25.3% per year after controlling for region fixed effects. The cross-sectional catch-up test finds a negative slope (-1.198, p = 0.026) on baseline data consumption, indicating a percentage catch-up. But catch-up in growth rates has not prevented widening in absolute consumption gaps, which is a concern for digital equity.</p>
+<p>The main limitation is data sparsity. With 9 regions and 8 years, statistical power remains limited. Country-level rollout and traffic data would enable stronger causal inference. Future work should also incorporate 5G-specific subscription counts and traffic volumes, which ITU has begun to publish, to measure the 5G effect on consumption more directly than coverage alone allows.</p>
 </section>
 </section>
 
